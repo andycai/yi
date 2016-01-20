@@ -6,7 +6,6 @@ function __G__TRACKBACK__(msg)
 end
 
 APPPATH = 'application.'
-MODPATH = 'modules.'
 SYSPATH = 'system.'
 LIBPATH = 'libs.'
 
