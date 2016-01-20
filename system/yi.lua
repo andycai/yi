@@ -38,7 +38,7 @@ function Yi:init(settings)
 end
 
 function Yi.use(path)
-	return require(MODPATH .. path)
+	return require(APPPATH .. 'modules.' .. path)
 end
 
 function Yi.import(path)
@@ -47,6 +47,11 @@ end
 
 function Yi.load(path)
 	return require(APPPATH .. path)
+end
+
+function Yi:view(path)
+	local View_ = Yi.use(path)
+	return View_:new()
 end
 
 function Yi.message(file, path)
@@ -118,11 +123,6 @@ function Facade:actor(name)
 	return self.actors[name]
 end
 
-function Facade:view(name, path)
-	local View_ = Yi.use(name..'.view.'..path)
-	return View_:new()
-end
-
 function Facade:send(event, ...)
 	Facade:notifyObservers(event, ...)
 end
@@ -142,14 +142,19 @@ function Actor:initialize(name)
 end
 
 function Actor:view(path)
-	return Facade:view(self.name, path)
+	return Yi:view(self.name .. ".view." .. path)
 end
 
 function Actor:getView()
 	if self.viewComponent == nil then
 		self.viewComponent = self:view(self.name)
-		self.viewComponent.handler = self.handler
 		assert(self.viewComponent ~= nil, self.name .. " view is nil")
+
+		local handler_ = Yi.use(self.name .. ".handler")
+		if handler_ then
+			handler_.actor = self
+		end
+		self.viewComponent.handler = handler_
 	end
 	return self.viewComponent
 end

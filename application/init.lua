@@ -8,7 +8,7 @@ load = Yi.load			-- load application
 import = Yi.import		-- load system
 use = Yi.use			-- load modules
 
-use("init")
+use("init")				-- load modules.init
 
 function requestServer( ... )
 	-- request to server
@@ -23,12 +23,7 @@ function route(response)
 			local action_ = act_[2]
 			local actor_ = facade:instanceActor(module_)
 			if actor_ then
-				local handler_ = actor_.resp[action_]
-				if handler_ then
-					handler_(resp.param)
-				else
-					print(string.format("Wrong action: %s", response))
-				end
+				actor_:on(action_, resp_.param)
 			else
 				print(string.format("Wrong actor: %s", response))
 			end

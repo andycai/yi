@@ -11,12 +11,10 @@ function meta:listInterests()
 end
 
 function meta:onRegister(name)
-	puts(self.resp)
-	puts(self.handler)
 end
 
 function meta:action_app_start(...)
-	Yi.import('helpers.csv')
+	import('helpers.csv')
 
 	puts("app start")
 	local nums, data, labels = Yi.loadcsv("./doc/player.csv")
@@ -38,19 +36,5 @@ function meta:action_bag_get(...)
 		-- response()
 	end)
 end
-
--- server response
-meta.resp = {
-	OnSayHello = function(param)
-		print("Hello, Yi!")
-	end
-}
-
--- view handler
-meta.handler = {
-	show = function(param)
-		print("view call me")
-	end
-}
 
 return meta
