@@ -6,33 +6,36 @@ function BaseActor:request(req, param)
 	-- requestServer(param)
 end
 
-BaseActor.resp_list_  = {}
-function BaseActor:response(resp, handler)
-	if resp and handler and isfunction(handler) then
-		self.resp_list_[resp] = handler
+BaseActor.action_dict_  = {}
+function BaseActor:response(action, handler)
+	if action and handler and isfunction(handler) then
+		self.action_dict_[action] = handler
 	end
 end
 
-function BaseActor:on(resp, param)
+function BaseActor:on(action, param)
 	local noresp = true
 
-	local handler_ = self.resp_list_[resp]
+	local handler_ = self.action_dict_[action]
 	if handler_ and isfunction(handler_) then
 		noresp = false
 		handler_(param)
 	else
-		handler_ = Yi.use(name .. ".response")
-		if not handler_.actor then
-			handler_.actor = self
-		end
-		if handler_ and isfunction(handler_) then
-			noresp = false
-			handler_(param)
+		resp_ = Yi.use(name .. ".response")
+		if resp_ then
+			if not resp_.actor then
+				resp_.actor = self
+			end
+			handler_ = resp_[action]
+			if handler_ and isfunction(handler_) then
+				noresp = false
+				handler_(resp_, param)
+			end
 		end
 	end
 
 	if noresp then
-		print(string.format("Wrong action: %s", resp))
+		print(string.format("Wrong action: %s", action))
 	end
 end
 
