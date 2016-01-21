@@ -5,5 +5,5 @@ local modules_init_ = {
 	nil,
 }
 
-_G.BaseActor = use('base.actor')
-facade:registerModules(modules_init_)
+_G.BaseActor = Yi.use('base.actor')
+Yi.facade:registerModules(modules_init_)

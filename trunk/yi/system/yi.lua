@@ -65,11 +65,13 @@ class Observer
 local Observer = Yi.class("Observer")
 
 function Observer:notifyObserver(event, ...)
-	self.context[self.handle](self.context, event, ...)
+	if self.action and isfunction(self.action) then
+		self.action(self.context, ...)
+	end
 end
 
 function Facade:registerObserver(event, observer)
-	assert(event, "event is empty")
+	assert(not isempty(event), "event is empty")
 
 	if self.observerMap[event] == nil then
 		self.observerMap[event] = {observer}
@@ -79,7 +81,7 @@ function Facade:registerObserver(event, observer)
 end
 
 function Facade:notifyObservers(event, ...)
-	assert(event, "event is empty")
+	assert(not isempty(event), "event is empty")
 
 	local observers_ = self.observerMap[event]
 	if observers_ then
@@ -90,7 +92,7 @@ function Facade:notifyObservers(event, ...)
 end
 
 function Facade:registerActor(name)
-	assert(name, "module name is empty")
+	assert(not isempty(name), "module name is empty")
 
 	local actor_ = self.actors[name] 
 	if not actor_ then
@@ -102,12 +104,22 @@ function Facade:registerActor(name)
 
 	local interests_ = actor_:listInterests()
 
-	for _,v in ipairs(interests_) do
+	for _,v in ipairs(interests_) do	
+		local event_ = v
+		local action_
+		if istable(v) then
+			event_ = v[1]
+			action_ = v[2]
+		end
+		if not action_ then
+			action_ = actor_['action_' .. event_]
+		end
+
 		local observer_ = Observer:new()
 		observer_.name = name
 		observer_.context = actor_
-		observer_.handle = "handleNotification"
-		self:registerObserver(v, observer_)
+		observer_.action = action_
+		self:registerObserver(event_, observer_)
 	end
 end
 
@@ -131,13 +143,11 @@ end
 class Actor
 --]]
 local Actor = Yi.class("Actor")
-Actor.handler = {}
-Actor.resp = {}
 
 Yi.Actor = Actor
 
 function Actor:initialize(name)
-	assert(name ~= nil and name ~= "", "module name is empty")
+	assert(not isempty(name), "module name is empty")
 	self.name = name
 end
 
@@ -168,16 +178,5 @@ function Actor:listInterests()
 end
 
 function Actor:onRegister() end
-
-function Actor:handleNotification(event, ...)
-	assert(event, "event is empty")
-
-	if event then
-		local action = 'action_' .. event
-		if self[action] and isfunction(self[action]) then
-			self[action](self, ...)
-		end
-	end
-end
 
 return Yi

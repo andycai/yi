@@ -3,12 +3,8 @@ if not SYSPATH then return end
 app = app or {}
 
 class = Yi.class
-facade = Yi.facade
-load = Yi.load			-- load application
-import = Yi.import		-- load system
-use = Yi.use			-- load modules
 
-use("init")				-- load modules.init
+Yi.use("init")				-- load modules.init
 
 function requestServer( ... )
 	-- request to server
@@ -32,5 +28,5 @@ function route(response)
 end
 
 function app.run()
-	facade:send("app_start", "startup")
+	Yi.facade:send("app_start", "startup")
 end

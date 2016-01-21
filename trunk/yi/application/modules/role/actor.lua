@@ -6,7 +6,7 @@ local meta = RoleActor
 
 function meta:listInterests()
 	return {
-		"app_start"
+		{"app_start", self.action_app_start}
 	}
 end
 
@@ -14,7 +14,7 @@ function meta:onRegister(name)
 end
 
 function meta:action_app_start(...)
-	import('helpers.csv')
+	Yi.import('helpers.csv')
 
 	puts("app start")
 	local nums, data, labels = Yi.loadcsv("./doc/player.csv")
