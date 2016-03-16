@@ -1,8 +1,6 @@
 if not SYSPATH then return end
 
-local RoleActor = class("RoleActor", BaseActor)
-
-local meta = RoleActor
+local meta = class("RoleActor", BaseActor)
 
 function meta:listInterests()
 	return {
@@ -14,12 +12,11 @@ function meta:onRegister(name)
 end
 
 function meta:action_app_start(...)
-	Yi.import('helpers.csv')
-
 	puts("app start")
-	local nums, data, labels = Yi.loadcsv("./doc/player.csv")
 	puts(Yi.__("Testing %s", "RoleActor"))
-	puts("csv data:", data)
+
+	local roleservice = Yi.use('role.service')
+	roleservice:print_csv()
 
 	local rolePane = self:getView()
 	rolePane:hello()
