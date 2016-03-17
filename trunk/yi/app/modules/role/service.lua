@@ -3,7 +3,7 @@ if not SYSPATH then return end
 local meta = {}
 
 function meta.print_csv()
-	Yi.import('helpers.csv')
+	Yi.system('helpers.csv')
 	local nums, data, labels = Yi.loadcsv("./doc/player.csv")
 	puts("csv data:", data)
 end
