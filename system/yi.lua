@@ -33,7 +33,7 @@ function Yi:init(settings)
 
 	if settings.lang then
 		self.lang = settings.lang
-		Yi.load('i18n.' .. self.lang)
+		Yi.import('i18n.' .. self.lang)
 	end
 end
 
@@ -41,15 +41,23 @@ function Yi.use(path)
 	return require(APPPATH .. 'modules.' .. path)
 end
 
-function Yi.import(path)
+function Yi.system(path)
 	return require(SYSPATH .. path)
 end
 
-function Yi.load(path)
+function Yi.import(path)
 	return require(APPPATH .. path)
 end
 
-function Yi:view(path)
+function Yi.load(path)
+	return require(path)
+end
+
+function Yi.view(path)
+	return Yi.use(path)
+end
+
+function Yi.new_view(path)
 	local View_ = Yi.use(path)
 	return View_:new()
 end
@@ -152,7 +160,7 @@ function Actor:initialize(name)
 end
 
 function Actor:view(path)
-	return Yi:view(self.name .. ".view." .. path)
+	return Yi.new_view(self.name .. ".view." .. path)
 end
 
 function Actor:getView()

@@ -5,7 +5,7 @@ function __G__TRACKBACK__(msg)
     print("----------------------------------------")
 end
 
-APPPATH = 'application.'
+APPPATH = 'app.'
 SYSPATH = 'system.'
 LIBPATH = 'libs.'
 
