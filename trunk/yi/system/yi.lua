@@ -49,6 +49,10 @@ function Yi.import(path)
 	return require(APPPATH .. path)
 end
 
+function Yi.lib(path)
+	return require(LIBPATH .. path)
+end
+
 function Yi.load(path)
 	return require(path)
 end
