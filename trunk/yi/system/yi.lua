@@ -158,6 +158,8 @@ local Actor = Yi.class("Actor")
 
 Yi.Actor = Actor
 
+Actor.action_dict_ = {}
+
 function Actor:initialize(name)
 	assert(not isempty(name), "module name is empty")
 	self.name = name
@@ -171,12 +173,6 @@ function Actor:getView()
 	if self.viewComponent == nil then
 		self.viewComponent = self:view(self.name)
 		assert(self.viewComponent ~= nil, self.name .. " view is nil")
-
-		local handler_ = Yi.use(self.name .. ".handler")
-		if handler_ then
-			handler_.actor = self
-		end
-		self.viewComponent.handler = handler_
 	end
 	return self.viewComponent
 end
@@ -190,5 +186,40 @@ function Actor:listInterests()
 end
 
 function Actor:onRegister() end
+
+function Actor:request(act, param)
+	if Yi.request and isfunction(Yi.request) then
+		Yi.request(act, param)
+	end
+end
+
+function Actor:response(action, handler)
+	assert(action, 'action is empty on response')
+	assert(isfunction(handler), 'handler is not function on response')
+
+	self.action_dict_[action] = handler
+end
+
+function Actor:on(action, param)
+	local on_resp_ = false
+	local on_ = self.action_dict_[action]
+	if on_ and isfunction(on_) then
+		on_resp_ = true
+	else
+		local resp_ = Yi.use(self.name .. '.response')
+		assert(resp_, self.name .. '.response is nil')
+		local act_ = string.explode(action, ".")
+		local method_ = act_[2]
+		on_ = resp_[method_]
+		if on_ and isfunction(on_) then
+			on_resp_ = true
+		end
+	end
+	if on_resp_ then
+		on_(param, self)
+	else
+		print(string.format('no response on action' .. action))
+	end
+end
 
 return Yi

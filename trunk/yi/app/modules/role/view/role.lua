@@ -1,12 +1,12 @@
 if not SYSPATH then return end
 
-local RolePane = class("RolePane")
-local meta = RolePane
+local meta = class("RolePane")
+local handler = Yi.use('role.handler')
 
 function meta:hello()
 	print("role pane say hello")
 
-	self.handler:show()
+	handler:show()
 end
 
 return meta
