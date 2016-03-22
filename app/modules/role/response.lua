@@ -1,12 +1,10 @@
 if not SYSPATH then return end
 
-local meta = {
-	actor = nil
-}
+local meta = {}
 
 -- server response
-function meta:OnSayHello(param)
-	print("Hello, Yi!")
+function meta.OnSayHello(param, actor)
+	print("Hello, " .. param.name .. "!")
 end
 
 return meta

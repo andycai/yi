@@ -1,6 +1,6 @@
 if not SYSPATH then return end
 
-local meta = class("RoleActor", BaseActor)
+local meta = class("RoleActor", Yi.Actor)
 
 function meta:listInterests()
 	return {
@@ -23,13 +23,15 @@ function meta:action_app_start(...)
 
 	local heroPane = self:view('hero')
 	heroPane:hello()
+
+	route('{"act":"role.OnSayHello", "param":{"name":"Andy"}}')
 end
 
-function meta:action_bag_get(...)
+function meta:action_say_hello(...)
 	puts("role bag info:")
 
-	self:request("bag.get", {type=1})
-	self:response("bag.OnGet", function(param)
+	self:request("role.sayHello", {type=1})
+	self:response("role.OnSayHello", function(param, actor)
 		-- response()
 	end)
 end
