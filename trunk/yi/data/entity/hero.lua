@@ -1,8 +1,8 @@
 if not SYSPATH then return end
 
--- RoleEntity 可以有多个 HeroEntity
+-- HeroEntity 可以有多个 EquipEntity
 
-local meta = class("RoleEntity")
+local meta = class("HeroEntity")
 
 function meta:initialize()
 	-- body
