@@ -1,4 +1,4 @@
-## Yi 是一个轻量级的 Lua 框架 ##
+## Yi 是一个轻量级的 Lua 开发框架 ##
 
 Yi 是为了 Lua 项目对模块的组织更加清晰做设计的。
 
@@ -13,21 +13,22 @@ Yi 是为了 Lua 项目对模块的组织更加清晰做设计的。
 	Testing RoleActor
 	csv data: {
 	  1 = {
-		1 = "Andy",
-		2 = "male",
-		3 = "22",
+	    1 = "Andy",
+	    2 = "male",
+	    3 = "22",
 	  },
 	  2 = {
-		1 = "Yufi",
-		2 = "female",
-		3 = "20",
+	    1 = "Yufi",
+	    2 = "female",
+	    3 = "20",
 	  },
 	  3 = {
-		1 = "Kelly",
-		2 = "femle",
-		3 = "1",
+	    1 = "Kelly",
+	    2 = "femle",
+	    3 = "1",
 	  },
 	}
 	role pane say hello
 	view call me
 	hero pane say hello
+	Hello, Andy!

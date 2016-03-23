@@ -14,7 +14,7 @@ Yi.request = requestServer
 function route(response)
 	xpcall(function()
 		if response then
-			local json = Yi.system('helpers.simplejson')
+			local json = Yi.lib('simplejson')
 			local resp_ = json.decode(response)
 			local act_ = string.explode(resp_.act, ".")
 			local module_ = act_[1]
