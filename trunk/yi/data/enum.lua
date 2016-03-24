@@ -1,0 +1,14 @@
+local meta = {}
+
+-- 代币
+meta.TYPE_TOKEN_SILVER = 1
+meta.TYPE_TOKEN_GOLD = 2
+meta.TYPE_TOKEN_GOD = 3
+meta.TYPE_TOKEN_ARENA = 4
+meta.TYPE_TOKEN_ENERGY = 5
+meta.TYPE_TOKEN_EXP = 6
+meta.TYPE_TOKEN_LEGION = 7
+meta.TYPE_TOKEN_PANCRATIUM = 8
+meta.TYPE_TOKEN_GANGUP = 9
+
+return meta
