@@ -3,6 +3,7 @@ if not SYSPATH then return end
 app = app or {}
 
 class = Yi.class
+Event = Yi.Event
 
 Yi.use("init")				-- load modules.init
 
@@ -29,5 +30,5 @@ function route(response)
 end
 
 function app.run()
-	Yi.facade:send("app_start", "startup")
+	Yi.facade:send(Event.EVENT_APP_START, "startup")
 end

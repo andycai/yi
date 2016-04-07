@@ -72,6 +72,17 @@ function Yi.message(file, path)
 end
 
 --[[
+Event
+--]]
+
+Yi.Event = {}
+local e_mt = {}
+setmetatable(Yi.Event, e_mt)
+e_mt.__index = function(table, key)
+	return 'Event.' .. key
+end
+
+--[[
 class Observer
 --]]
 local Observer = Yi.class("Observer")
@@ -115,18 +126,16 @@ function Facade:registerActor(name)
 	actor_:onRegister()
 
 	local interests_ = actor_:listInterests()
+	local len_ = #interests_
+	for i = 1, len_, 2 do
+		local observer_ = Observer:new()
+		observer_.name = name
+		observer_.context = actor_
+		observer_.action = interests_[i+1]
+		self:registerObserver(interests_[i], observer_)
+	end
 
-	for _,v in ipairs(interests_) do	
-		local event_ = v
-		local action_
-		if istable(v) then
-			event_ = v[1]
-			action_ = v[2]
-		end
-		if not action_ then
-			action_ = actor_['action_' .. event_]
-		end
-
+	for event_, action_ in pairs(actor_.actions) do
 		local observer_ = Observer:new()
 		observer_.name = name
 		observer_.context = actor_
@@ -159,6 +168,7 @@ local Actor = Yi.class("Actor")
 Yi.Actor = Actor
 
 Actor.action_dict_ = {}
+Actor.actions = {}
 
 function Actor:initialize(name)
 	assert(not isempty(name), "module name is empty")
