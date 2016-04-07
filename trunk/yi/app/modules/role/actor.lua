@@ -4,11 +4,15 @@ local meta = class("RoleActor", Yi.Actor)
 
 function meta:listInterests()
 	return {
-		{"app_start", self.action_app_start}
+		Event.EVENT_APP_START, self.action_app_start,
+		Event.EVENT_SAY_HELLO, self.action_say_hello,
 	}
 end
 
-function meta:onRegister(name)
+function meta:onRegister()
+	-- 与 listInterests 返回数组等价
+	-- self.actions[Event.EVENT_APP_START] = self.action_app_start
+	-- self.actions[Event.EVENT_SAY_HELLO] = self.action_say_hello
 end
 
 function meta:action_app_start(...)
