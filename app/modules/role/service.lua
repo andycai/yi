@@ -1,11 +1,11 @@
 if not SYSPATH then return end
 
+system('helpers.csv')
+
 local meta = {}
 
-function meta.print_csv()
-	Yi.system('helpers.csv')
-	local nums, data, labels = Yi.loadcsv("./doc/player.csv")
-	puts("csv data:", data)
+function meta.parse_csv()
+	return Yi.loadcsv("./doc/player.csv")
 end
 
 function meta:get_nick()

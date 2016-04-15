@@ -6,27 +6,23 @@ local modules_init_ = {
 }
 
 function app.model(name)
-    return Yi.use(name .. '.model')
+	return Yi.use(name .. '.model')
 end
 
 function app.service(name)
-    return Yi.use(name .. '.service')
+	return Yi.use(name .. '.service')
 end
 
 function app.response(name)
-    return Yi.use(name .. '.response')
+	return Yi.use(name .. '.response')
 end
 
 function app.view(name, view)
-    return Yi.view(name .. '.view.' .. view)
+	return Yi.view(name .. '.view.' .. view)
 end
 
 function app.entity(name)
-    return Yi.load('data.entity.' .. name)
-end
-
-function app.table(name)
-    return Yi.load('data.config.' .. name)
+	return Yi.load('data.entity.' .. name)
 end
 
 Yi.facade:registerModules(modules_init_)

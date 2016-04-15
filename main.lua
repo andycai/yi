@@ -11,7 +11,8 @@ LIBPATH = 'libs.'
 
 local function main()
 	require(SYSPATH .. 'yi')
-	require(APPPATH .. 'init')
+
+	Yi.import('init')
 	Yi:init{
 		log = true,
 		lang = 'zh_cn'

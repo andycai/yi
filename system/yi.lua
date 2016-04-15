@@ -5,7 +5,8 @@ local format = string.format
 Yi = {
 	lang = 'zh_cn',
 	log = false,
-	init_ = false
+	init = false,
+	loaded = {}
 }
 
 local Facade = {
@@ -13,48 +14,29 @@ local Facade = {
 	actors = {}
 }
 
-Yi.class = require(LIBPATH .. 'middleclass')
-
-require(SYSPATH .. 'ext.init')
-require(SYSPATH .. 'helpers.init')
-
 Yi.facade = Facade
 
-function Yi:init(settings)
-	if self.init_ then
-		return
+function Yi.load(path)
+	if not Yi.loaded[path] then
+		Yi.loaded[path] = true
 	end
-
-	self.init_ = true
-
-	if settings.log then
-		self.log = settings.log
-	end
-
-	if settings.lang then
-		self.lang = settings.lang
-		Yi.import('i18n.' .. self.lang)
-	end
-end
-
-function Yi.use(path)
-	return require(APPPATH .. 'modules.' .. path)
+	return require(path)
 end
 
 function Yi.system(path)
-	return require(SYSPATH .. path)
+	return Yi.load(SYSPATH .. path)
 end
 
 function Yi.import(path)
-	return require(APPPATH .. path)
+	return Yi.load(APPPATH .. path)
+end
+
+function Yi.use(path)
+	return Yi.load(APPPATH .. 'modules.' .. path)
 end
 
 function Yi.lib(path)
-	return require(LIBPATH .. path)
-end
-
-function Yi.load(path)
-	return require(path)
+	return Yi.load(LIBPATH .. path)
 end
 
 function Yi.view(path)
@@ -67,8 +49,39 @@ function Yi.new_view(path)
 end
 
 function Yi.message(file, path)
-	messages = require(APPPATH .. 'messages.' .. path)
+	local messages = Yi.import('messages.' .. path)
 	return messages[path]
+end
+
+function Yi.lazy(path)
+	local obj ={}
+	local mt = {}
+	setmetatable(obj, mt)
+	mt.__call = function(self, ...)
+		return Yi.load(path)
+	end
+	return obj
+end
+
+Yi.class = Yi.lib('middleclass')
+Yi.system('ext.init')
+Yi.system('helpers.init')
+
+function Yi:init(settings)
+	if self.init then
+		return
+	end
+
+	self.init = true
+
+	if settings.log then
+		self.log = settings.log
+	end
+
+	if settings.lang then
+		self.lang = settings.lang
+		Yi.import('i18n.' .. self.lang)
+	end
 end
 
 --[[
@@ -167,7 +180,7 @@ local Actor = Yi.class("Actor")
 
 Yi.Actor = Actor
 
-Actor.action_dict_ = {}
+Actor.actionDict = {}
 Actor.actions = {}
 
 function Actor:initialize(name)
@@ -197,9 +210,9 @@ end
 
 function Actor:onRegister() end
 
-function Actor:request(act, param)
-	if Yi.request and isfunction(Yi.request) then
-		Yi.request(act, param)
+function Actor:request(action, param)
+	if isfunction(Yi.request) then
+		Yi.request(action, param)
 	end
 end
 
@@ -207,13 +220,13 @@ function Actor:response(action, handler)
 	assert(action, 'action is empty on response')
 	assert(isfunction(handler), 'handler is not function on response')
 
-	self.action_dict_[action] = handler
+	self.actionDict[action] = handler
 end
 
 function Actor:on(action, param)
 	local on_resp_ = false
-	local on_ = self.action_dict_[action]
-	if on_ and isfunction(on_) then
+	local on_ = self.actionDict[action]
+	if isfunction(on_) then
 		on_resp_ = true
 	else
 		local resp_ = Yi.use(self.name .. '.response')
@@ -221,7 +234,7 @@ function Actor:on(action, param)
 		local act_ = string.explode(action, ".")
 		local method_ = act_[2]
 		on_ = resp_[method_]
-		if on_ and isfunction(on_) then
+		if isfunction(on_) then
 			on_resp_ = true
 		end
 	end
@@ -230,6 +243,27 @@ function Actor:on(action, param)
 	else
 		print(string.format('no response on action' .. action))
 	end
+end
+
+function Actor:model(name)
+	if not name then
+		name = self.name
+	end
+	return Yi.use(name .. '.model')
+end
+
+function Actor:service(name)
+	if not name then
+		name = self.name
+	end
+	return Yi.use(name .. '.service')
+end
+
+function Actor:resp(name)
+	if not name then
+		name = self.name
+	end
+	return Yi.use(name .. '.response')
 end
 
 return Yi

@@ -1,4 +1,4 @@
--- require(SYSPATH .. "ext.math")
--- require(SYSPATH .. "ext.number")
-require(SYSPATH .. "ext.table")
-require(SYSPATH .. "ext.string")
+-- Yi.system("ext.math")
+-- Yi.system("ext.number")
+Yi.system("ext.table")
+Yi.system("ext.string")
