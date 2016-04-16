@@ -37,9 +37,6 @@ local __meta = {
 
 		if str == nil then
 			str = key
-			if self.hook then
-				self.hook(str)
-			end
 		end
 		str = tostring(str)
 		local strings = {}

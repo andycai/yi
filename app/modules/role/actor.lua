@@ -2,6 +2,8 @@ if not SYSPATH then return end
 
 local meta = class("RoleActor", Yi.Actor)
 
+local role = magic('role')
+
 local function on_say_hello_(param, actor)
 	puts("on say hello")
 end
@@ -10,10 +12,10 @@ function meta:action_app_start(...)
 	puts("app start")
 	puts(__("Testing %s", "RoleActor"))
 
-	local nums, data, labels = self:service():parse_csv()
+	local nums, data, labels = role.service:parse_csv()
 	puts("csv data:", data)
 
-	self:model():set_nick('babala')
+	role.model:set_nick('babala')
 
 	local rolePane = self:getView()
 	rolePane:hello()

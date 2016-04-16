@@ -53,12 +53,16 @@ function Yi.message(file, path)
 	return messages[path]
 end
 
-function Yi.lazy(path)
+function Yi.magic(moduleName)
 	local obj ={}
 	local mt = {}
 	setmetatable(obj, mt)
-	mt.__call = function(self, ...)
-		return Yi.load(path)
+	mt.__index = function(table, key)
+		if key == 'actor' then
+			return Facade:actor(moduleName)
+		else
+			return Yi.use(string.format('%s.%s', moduleName, key))
+		end
 	end
 	return obj
 end
@@ -243,27 +247,6 @@ function Actor:on(action, param)
 	else
 		print(string.format('no response on action' .. action))
 	end
-end
-
-function Actor:model(name)
-	if not name then
-		name = self.name
-	end
-	return Yi.use(name .. '.model')
-end
-
-function Actor:service(name)
-	if not name then
-		name = self.name
-	end
-	return Yi.use(name .. '.service')
-end
-
-function Actor:resp(name)
-	if not name then
-		name = self.name
-	end
-	return Yi.use(name .. '.response')
 end
 
 return Yi

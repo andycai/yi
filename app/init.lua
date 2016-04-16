@@ -8,6 +8,7 @@ load = Yi.load
 use = Yi.use
 import = Yi.import
 system = Yi.system
+magic = Yi.magic
 __ = Yi.__
 
 use("init")				-- load modules.init
