@@ -6,7 +6,8 @@ Yi = {
 	lang = 'zh_cn',
 	log = false,
 	init = false,
-	loaded = {}
+	loaded = {},
+	magicModules = {}
 }
 
 local Facade = {
@@ -54,6 +55,10 @@ function Yi.message(file, path)
 end
 
 function Yi.magic(moduleName)
+	if Yi.magicModules[moduleName] then
+		return Yi.magicModules[moduleName]
+	end
+
 	local obj ={}
 	local mt = {}
 	setmetatable(obj, mt)
@@ -66,6 +71,8 @@ function Yi.magic(moduleName)
 			return Yi.use(string.format('%s.%s', moduleName, key))
 		end
 	end
+	Yi.magicModules[moduleName] = obj
+	
 	return obj
 end
 
