@@ -16,11 +16,9 @@ function meta:action_app_start(...)
 	puts("csv data:", data)
 
 	role.model:set_nick('babala')
+	role.view:hello()
 
-	local rolePane = self:getView()
-	rolePane:hello()
-
-	local heroPane = self:view('hero')
+	local heroPane = role.newView('hero')
 	heroPane:hello()
 
 	route('{"act":"role.OnSayHello", "param":{"name":"Andy"}}')

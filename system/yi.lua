@@ -43,7 +43,7 @@ function Yi.view(path)
 	return Yi.use(path)
 end
 
-function Yi.new_view(path)
+function Yi.newView(path)
 	local View_ = Yi.use(path)
 	return View_:new()
 end
@@ -60,6 +60,8 @@ function Yi.magic(moduleName)
 	mt.__index = function(table, key)
 		if key == 'actor' then
 			return Facade:actor(moduleName)
+		elseif key == 'newView' then
+			return function(path) return Yi.newView(moduleName..'.view.'..path) end
 		else
 			return Yi.use(string.format('%s.%s', moduleName, key))
 		end
@@ -192,16 +194,8 @@ function Actor:initialize(name)
 	self.name = name
 end
 
-function Actor:view(path)
-	return Yi.new_view(self.name .. ".view." .. path)
-end
-
-function Actor:getView()
-	if self.viewComponent == nil then
-		self.viewComponent = self:view(self.name)
-		assert(self.viewComponent ~= nil, self.name .. " view is nil")
-	end
-	return self.viewComponent
+function Actor:newView(path)
+	return Yi.newView(self.name .. ".view." .. path)
 end
 
 function Actor:send(event, ...)
