@@ -76,6 +76,10 @@ function Yi.magic(moduleName)
 	return obj
 end
 
+function Yi.reload(path)
+	package.loaded[path] = nil
+end
+
 Yi.class = Yi.lib('middleclass')
 Yi.system('ext.init')
 Yi.system('helpers.init')
