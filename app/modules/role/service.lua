@@ -1,14 +1,14 @@
 if not SYSPATH then return end
 
-system('helpers.csv')
+load('system.helpers.csv')
 
 local meta = {}
 
-function meta.parse_csv()
+function meta.ParseCsv()
 	return Yi.loadcsv("./doc/player.csv")
 end
 
-function meta:get_nick()
+function meta:GetNick()
 	return 'superman'
 end
 

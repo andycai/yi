@@ -2,4 +2,4 @@
 enum = load('data.enum')
 protocol = load('data.protocol')
 status = load('data.status')
-box = load('data.box')
+box = load('data.table')

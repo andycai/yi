@@ -12,12 +12,12 @@ LIBPATH = 'libs.'
 local function main()
 	require(SYSPATH .. 'yi')
 
-	Yi.import('init')
-	Yi:init{
+	Yi.Load('app.init')
+	Yi:Init{
 		log = true,
 		lang = 'zh_cn'
 	}
-	app.run()
+	app.Run()
 end
 
 xpcall(main, __G__TRACKBACK__)

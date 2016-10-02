@@ -4,31 +4,29 @@ app = app or {}
 
 class = Yi.class
 Event = Yi.Event
-load = Yi.load
-use = Yi.use
-import = Yi.import
-system = Yi.system
-magic = Yi.magic
+load = Yi.Load
+use = Yi.Use
+magic = Yi.Magic
 __ = Yi.__
 
 use("init")				-- load modules.init
 load('data.init')
 
-local function request_server( ... )
+local function RequestServer( ... )
 	-- request to server
 end
-Yi.request = requestServer
+Yi.Request = RequestServer
 
-function route(response)
+function Route(response)
 	xpcall(function()
 		if response then
 			local json = load('libs.dkjson')
 			local resp = json.decode(response)
 			local actions = string.explode(resp.act, ".")
 			local moduleName = actions[1]
-			local actor = Yi.facade:actor(moduleName)
+			local actor = Yi.facade:Actor(moduleName)
 			if actor then
-				actor:on(resp.act, resp.param)
+				actor:On(resp.act, resp.param)
 			else
 				print(string.format("Wrong actor: %s", response))
 			end
@@ -36,6 +34,6 @@ function route(response)
 	end, __G__TRACKBACK__)
 end
 
-function app.run()
-	Yi.facade:send(Event.EVENT_APP_START, "startup")
+function app.Run()
+	Yi.facade:Send(Event.EVENT_APP_START, "startup")
 end

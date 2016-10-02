@@ -17,44 +17,32 @@ local Facade = {
 
 Yi.facade = Facade
 
-function Yi.load(path)
+function Yi.Load(path)
 	if not Yi.loaded[path] then
 		Yi.loaded[path] = true
 	end
 	return require(path)
 end
 
-function Yi.system(path)
-	return Yi.load(SYSPATH .. path)
+function Yi.Use(path)
+	return Yi.Load(APPPATH .. 'modules.' .. path)
 end
 
-function Yi.import(path)
-	return Yi.load(APPPATH .. path)
+function Yi.View(path)
+	return Yi.Use(path)
 end
 
-function Yi.use(path)
-	return Yi.load(APPPATH .. 'modules.' .. path)
-end
-
-function Yi.lib(path)
-	return Yi.load(LIBPATH .. path)
-end
-
-function Yi.view(path)
-	return Yi.use(path)
-end
-
-function Yi.newView(path)
-	local View_ = Yi.use(path)
+function Yi.NewView(path)
+	local View_ = Yi.Use(path)
 	return View_:new()
 end
 
-function Yi.message(file, path)
-	local messages = Yi.import('messages.' .. path)
+function Yi.Message(file, path)
+	local messages = Yi.Load('app.messages.' .. path)
 	return messages[path]
 end
 
-function Yi.magic(moduleName)
+function Yi.Magic(moduleName)
 	if Yi.magicModules[moduleName] then
 		return Yi.magicModules[moduleName]
 	end
@@ -64,11 +52,11 @@ function Yi.magic(moduleName)
 	setmetatable(obj, mt)
 	mt.__index = function(table, key)
 		if key == 'actor' then
-			return Facade:actor(moduleName)
-		elseif key == 'newView' then
-			return function(path) return Yi.newView(moduleName..'.view.'..path) end
+			return Facade:Actor(moduleName)
+		elseif key == 'NewView' then
+			return function(path) return Yi.NewView(moduleName..'.view.'..path) end
 		else
-			return Yi.use(string.format('%s.%s', moduleName, key))
+			return Yi.Use(string.format('%s.%s', moduleName, key))
 		end
 	end
 	Yi.magicModules[moduleName] = obj
@@ -76,15 +64,26 @@ function Yi.magic(moduleName)
 	return obj
 end
 
-function Yi.reload(path)
+Yi.module = {}   -- module
+local modulemt_ = {}
+setmetatable(Yi.module, modulemt_)
+modulemt_.__index = function(table, key)
+	if key == 'Send' then
+		return function(...) return Facade:Send(...) end
+	else
+		return Yi.Magic(key)
+	end
+end
+
+function Yi.Reload(path)
 	package.loaded[path] = nil
 end
 
-Yi.class = Yi.lib('middleclass')
-Yi.system('ext.init')
-Yi.system('helpers.init')
+Yi.class = Yi.Load('libs.middleclass')
+Yi.Load('system.ext.init')
+Yi.Load('system.helpers.init')
 
-function Yi:init(settings)
+function Yi:Init(settings)
 	if self.init then
 		return
 	end
@@ -97,7 +96,7 @@ function Yi:init(settings)
 
 	if settings.lang then
 		self.lang = settings.lang
-		Yi.import('i18n.' .. self.lang)
+		Yi.Load('app.i18n.' .. self.lang)
 	end
 end
 
@@ -117,13 +116,13 @@ class Observer
 --]]
 local Observer = Yi.class("Observer")
 
-function Observer:notifyObserver(event, ...)
+function Observer:NotifyObserver(event, ...)
 	if self.action and isfunction(self.action) then
 		self.action(self.context, ...)
 	end
 end
 
-function Facade:registerObserver(event, observer)
+function Facade:RegisterObserver(event, observer)
 	assert(not isempty(event), "event is empty")
 
 	if self.observerMap[event] == nil then
@@ -133,36 +132,36 @@ function Facade:registerObserver(event, observer)
 	end
 end
 
-function Facade:notifyObservers(event, ...)
+function Facade:NotifyObservers(event, ...)
 	assert(not isempty(event), "event is empty")
 
 	local observers_ = self.observerMap[event]
 	if observers_ then
 		for _,v in ipairs(observers_) do
-			v:notifyObserver(event, ...)
+			v:NotifyObserver(event, ...)
 		end
 	end
 end
 
-function Facade:registerActor(name)
+function Facade:RegisterActor(name)
 	assert(not isempty(name), "module name is empty")
 
 	local actor_ = self.actors[name] 
 	if not actor_ then
-		local Actor_ = Yi.use(name..'.actor')
+		local Actor_ = Yi.Use(name..'.actor')
 		actor_ = Actor_:new(name)
 		self.actors[name] = actor_
 	end
-	actor_:onRegister()
+	actor_:OnRegister()
 
-	local interests_ = actor_:listInterests()
+	local interests_ = actor_:ListInterests()
 	local len_ = #interests_
 	for i = 1, len_, 2 do
 		local observer_ = Observer:new()
 		observer_.name = name
 		observer_.context = actor_
 		observer_.action = interests_[i+1]
-		self:registerObserver(interests_[i], observer_)
+		self:RegisterObserver(interests_[i], observer_)
 	end
 
 	for event_, action_ in pairs(actor_.actions) do
@@ -170,24 +169,24 @@ function Facade:registerActor(name)
 		observer_.name = name
 		observer_.context = actor_
 		observer_.action = action_
-		self:registerObserver(event_, observer_)
+		self:RegisterObserver(event_, observer_)
 	end
 end
 
-function Facade:registerModules(modules)
+function Facade:RegisterModules(modules)
 	for _,v in ipairs(modules) do
 		if v then
-			self:registerActor(v)
+			self:RegisterActor(v)
 		end
 	end
 end
 
-function Facade:actor(name)
+function Facade:Actor(name)
 	return self.actors[name]
 end
 
-function Facade:send(event, ...)
-	Facade:notifyObservers(event, ...)
+function Facade:Send(event, ...)
+	Facade:NotifyObservers(event, ...)
 end
 
 --[[
@@ -205,40 +204,40 @@ function Actor:initialize(name)
 	self.name = name
 end
 
-function Actor:newView(path)
-	return Yi.newView(self.name .. ".view." .. path)
+function Actor:NewView(path)
+	return Yi.NewView(self.name .. ".view." .. path)
 end
 
-function Actor:send(event, ...)
-	Facade:notifyObservers(event, ...)
+function Actor:Send(event, ...)
+	Facade:NotifyObservers(event, ...)
 end
 
-function Actor:listInterests()
+function Actor:ListInterests()
 	return {}
 end
 
-function Actor:onRegister() end
+function Actor:OnRegister() end
 
-function Actor:request(action, param)
-	if isfunction(Yi.request) then
-		Yi.request(action, param)
+function Actor:Request(action, param)
+	if isfunction(Yi.Request) then
+		Yi.Request(action, param)
 	end
 end
 
-function Actor:response(action, handler)
+function Actor:Response(action, handler)
 	assert(action, 'action is empty on response')
 	assert(isfunction(handler), 'handler is not function on response')
 
 	self.actionDict[action] = handler
 end
 
-function Actor:on(action, param)
+function Actor:On(action, param)
 	local on_resp_ = false
 	local on_ = self.actionDict[action]
 	if isfunction(on_) then
 		on_resp_ = true
 	else
-		local resp_ = Yi.use(self.name .. '.response')
+		local resp_ = Yi.Use(self.name .. '.response')
 		assert(resp_, self.name .. '.response is nil')
 		local act_ = string.explode(action, ".")
 		local method_ = act_[2]
