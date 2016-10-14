@@ -1,8 +1,8 @@
 function __G__TRACKBACK__(msg)
-    print("----------------------------------------")
-    print("LUA ERROR: " .. tostring(msg) .. "\n")
-    print(debug.traceback())
-    print("----------------------------------------")
+	print("----------------------------------------")
+	print("LUA ERROR: " .. tostring(msg) .. "\n")
+	print(debug.traceback())
+	print("----------------------------------------")
 end
 
 APPPATH = 'app.'
@@ -12,12 +12,12 @@ LIBPATH = 'libs.'
 local function main()
 	require(SYSPATH .. 'yi')
 
-	Yi.Load('app.init')
-	Yi:Init{
+	Yi.load('app.init')
+	Yi:init{
 		log = true,
 		lang = 'zh_cn'
 	}
-	app.Run()
+	app.run()
 end
 
 xpcall(main, __G__TRACKBACK__)

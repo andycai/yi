@@ -15,11 +15,11 @@ end
 
 local revtbl = reverse(tbl)
 
-function meta.FindId(name)
+function meta.findId(name)
 	return revtbl[name]
 end
 
-function meta.FindName(id)
+function meta.findName(id)
 	return tbl[id]
 end
 

@@ -4,10 +4,10 @@ local meta = {}
 
 local role = magic('role')
 
-function meta:Hello()
+function meta:hello()
 	print("role pane say hello")
 
-	role.handler:Show()
+	role.handler:show()
 end
 
 return meta

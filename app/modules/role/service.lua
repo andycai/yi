@@ -4,11 +4,11 @@ load('system.helpers.csv')
 
 local meta = {}
 
-function meta.ParseCsv()
+function meta.parseCsv()
 	return Yi.loadcsv("./doc/player.csv")
 end
 
-function meta:GetNick()
+function meta:getNick()
 	return 'superman'
 end
 

@@ -1,4 +1,4 @@
--- Yi.Load("system.ext.math")
--- Yi.Load("system.ext.number")
-Yi.Load("system.ext.table")
-Yi.Load("system.ext.string")
+-- Yi.load("system.ext.math")
+-- Yi.load("system.ext.number")
+Yi.load("system.ext.table")
+Yi.load("system.ext.string")

@@ -3,7 +3,7 @@ if not SYSPATH then return end
 local meta = {}
 
 -- view handler
-function meta.Show(param)
+function meta.show(param)
 	print("view call me")
 end
 

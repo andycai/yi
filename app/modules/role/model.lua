@@ -2,7 +2,7 @@ if not SYSPATH then return end
 
 local meta = {}
 
-function meta:SetNick(nick)
+function meta:setNick(nick)
 	self.nick = nick
 end
 

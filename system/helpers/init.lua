@@ -2,8 +2,8 @@ if not SYSPATH then return end
 
 Yi = Yi or {}
 
-Yi.Load('system.helpers.var')
-Yi.Load('system.helpers.i18n')
+Yi.load('system.helpers.var')
+Yi.load('system.helpers.i18n')
 
 function Yi.tostring(obj, ...)
 	if type(obj) == "table" then
