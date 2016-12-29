@@ -60,7 +60,7 @@ function Yi.magic(moduleName)
 		end
 	end
 	Yi.magicModules[moduleName] = obj
-	
+
 	return obj
 end
 
@@ -146,12 +146,15 @@ end
 function Facade:registerActor(name)
 	assert(not isempty(name), "module name is empty")
 
-	local actor_ = self.actors[name] 
-	if not actor_ then
-		local Actor_ = Yi.use(name..'.actor')
-		actor_ = Actor_:new(name)
-		self.actors[name] = actor_
-	end
+	local sp_ = string.explode(name, ".")
+	local mName = sp_[#sp_]			-- role.skill => skill
+
+	local actor_ = self.actors[mName]
+	assert(actor_ == nil, "module name repetition:", mName)
+
+	local Actor_ = Yi.use(name..'.actor')
+	actor_ = Actor_:new(name)
+	self.actors[mName] = actor_
 	actor_:onRegister()
 
 	local interests_ = actor_:listInterests()

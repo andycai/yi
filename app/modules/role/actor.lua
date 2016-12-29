@@ -2,8 +2,6 @@ if not SYSPATH then return end
 
 local meta = class("RoleActor", Yi.Actor)
 
-local role = magic('role')
-
 function meta:listInterests()
 	return {
 		Event.EVENT_APP_START, self.action_app_start,
@@ -21,13 +19,13 @@ function meta:action_app_start(...)
 	puts("app start")
 	puts(__("Testing %s", "RoleActor"))
 
-	local nums, data, labels = role.service:parseCsv()
+	local nums, data, labels = std.role.service:parseCsv()
 	puts("csv data:", data)
 
-	role.model:setNick('babala')
-	role.view:hello()
+	std.role.model:setNick('babala')
+	std.role.view:hello()
 
-	local heroPane = role.newView('hero')
+	local heroPane = std.role.newView('hero')
 	heroPane:hello()
 
 	route('{"act":"role.OnSayHello", "param":{"name":"Andy"}}')

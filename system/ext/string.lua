@@ -2,15 +2,15 @@ function string.unescape(url)
 	url = string.gsub(url, "+", " ")
 	url = string.gsub(url, "%%(%x%x)", function(hex)
 		return string.char(tonumber(hex, 16))
-	end)  
+	end)
 
 	return url
 end
 
 function string.split(s, sep)
 	local t = {}
-	for o in string.gmatch(s, "([^" .. (sep or " ") .. "]+)") do 
-		table.insert(t, o) 
+	for o in string.gmatch(s, "([^" .. (sep or " ") .. "]+)") do
+		table.insert(t, o)
 	end
 
 	return t
@@ -153,7 +153,7 @@ function string.decodeEntities(s)
 		lt = "<",
 		gt = ">",
 		quot = "\"",
-		apos = "'", 
+		apos = "'",
 		nbsp = " ",
 		iexcl = "¡",
 		cent = "¢",
@@ -187,7 +187,7 @@ function string.decodeEntities(s)
 		frac34 = "¾",
 		iquest = "¿",
 		times = "×",
-		divide = "÷",   
+		divide = "÷",
 	}
 
 	return string.gsub(s, "&(%w+);", entities)
