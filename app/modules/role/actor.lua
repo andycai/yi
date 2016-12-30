@@ -25,7 +25,7 @@ function meta:action_app_start(...)
 	go.role.model:setNick('babala')
 	go.role.view:hello()
 
-	local heroPane = go.role.NewView('hero')
+	local heroPane = go.role.newview('hero')
 	heroPane:hello()
 
 	route('{"act":"role.OnSayHello", "param":{"name":"Andy"}}')

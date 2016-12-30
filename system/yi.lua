@@ -29,11 +29,7 @@ function Yi.use(path)
 	return Yi.load(APPPATH .. 'modules.' .. path)
 end
 
-function Yi.view(path)
-	return Yi.use(path)
-end
-
-function Yi.newView(path)
+function Yi.newview(path)
 	local View_ = Yi.use(path)
 	return View_:new()
 end
@@ -49,28 +45,30 @@ function Yi.magic(module_name)
 	end
 
 	local obj ={}
+	obj.newview = function(path)
+		return Yi.newview(format('%s.view.%s', module_name, path))
+	end
+	obj.loadview = function(path)
+		return Yi.use(format('%s.view.%s', module_name, path))
+	end
+
 	local mt = {}
 	setmetatable(obj, mt)
 	mt.__index = function(table, key)
-		if key == 'NewView' then
-			return function(path) return Yi.newView(module_name..'.view.'..path) end
-		else
-			return Yi.use(string.format('%s.%s', module_name, key))
-		end
+		return Yi.use(string.format('%s.%s', module_name, key))
 	end
 	Yi.magic_modules[module_name] = obj
 
 	return obj
 end
 
-Yi.module = {}   -- module
-local modulemt_ = {}
-setmetatable(Yi.module, modulemt_)
-
-Yi.module.send = function(...)
+Yi.go = {}   -- go to module
+Yi.go.send = function(...)
 	Facade:send(...)
 end
 
+local modulemt_ = {}
+setmetatable(Yi.go, modulemt_)
 modulemt_.__index = function(table, key)
 	assert(Yi.module_names[key], "module doesn't exists: " .. key)
 	return Yi.magic(Yi.module_names[key])
@@ -106,6 +104,10 @@ Event
 --]]
 
 Yi.Event = {}
+Yi.Event.send = function(...)
+	Facade:send(...)
+end
+
 local e_mt = {}
 setmetatable(Yi.Event, e_mt)
 e_mt.__index = function(table, key)
@@ -206,7 +208,7 @@ Actor.m_action_dict = {}
 Actor.m_actions = {}
 Actor.static.instance_ = nil
 
-Actor.static.Instance = function()
+Actor.static.instance = function()
 	if not Actor.instance_ then
 		Actor.instance_ = Actor:new()
 	end
@@ -216,10 +218,6 @@ end
 function Actor:initialize(name)
 	assert(not isempty(name), "module name is empty")
 	self.m_name = name
-end
-
-function Actor:newView(path)
-	return Yi.newView(self.m_name .. ".view." .. path)
 end
 
 function Actor:listInterests()
