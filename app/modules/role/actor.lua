@@ -19,16 +19,18 @@ function meta:action_app_start(...)
 	puts("app start")
 	puts(__("Testing %s", "RoleActor"))
 
-	local nums, data, labels = std.role.service:parseCsv()
+	local nums, data, labels = go.role.service:parseCsv()
 	puts("csv data:", data)
 
-	std.role.model:setNick('babala')
-	std.role.view:hello()
+	go.role.model:setNick('babala')
+	go.role.view:hello()
 
-	local heroPane = std.role.newView('hero')
+	local heroPane = go.role.NewView('hero')
 	heroPane:hello()
 
 	route('{"act":"role.OnSayHello", "param":{"name":"Andy"}}')
+
+	go.send(Event.EVENT_BAG_OPEN, 'open bag please')
 end
 
 function meta:action_say_hello(...)

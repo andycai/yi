@@ -8,7 +8,7 @@ load = Yi.load
 use = Yi.use
 magic = Yi.magic
 __ = Yi.__
-std = Yi.module
+go = Yi.module
 
 use("init")				-- load modules.init
 load('data.init')

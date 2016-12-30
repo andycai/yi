@@ -7,12 +7,13 @@ Yi = {
 	log = false,
 	init = false,
 	loaded = {},
-	magicModules = {}
+	magic_modules = {},
+	module_names = {}
 }
 
 local Facade = {
-	observerMap = {},
-	actors = {}
+	m_observer_map = {},
+	m_actors = {}
 }
 
 Yi.facade = Facade
@@ -42,24 +43,22 @@ function Yi.message(file, path)
 	return messages[path]
 end
 
-function Yi.magic(moduleName)
-	if Yi.magicModules[moduleName] then
-		return Yi.magicModules[moduleName]
+function Yi.magic(module_name)
+	if Yi.magic_modules[module_name] then
+		return Yi.magic_modules[module_name]
 	end
 
 	local obj ={}
 	local mt = {}
 	setmetatable(obj, mt)
 	mt.__index = function(table, key)
-		if key == 'actor' then
-			return Facade:Actor(moduleName)
-		elseif key == 'newView' then
-			return function(path) return Yi.newView(moduleName..'.view.'..path) end
+		if key == 'NewView' then
+			return function(path) return Yi.newView(module_name..'.view.'..path) end
 		else
-			return Yi.use(string.format('%s.%s', moduleName, key))
+			return Yi.use(string.format('%s.%s', module_name, key))
 		end
 	end
-	Yi.magicModules[moduleName] = obj
+	Yi.magic_modules[module_name] = obj
 
 	return obj
 end
@@ -67,12 +66,14 @@ end
 Yi.module = {}   -- module
 local modulemt_ = {}
 setmetatable(Yi.module, modulemt_)
+
+Yi.module.send = function(...)
+	Facade:send(...)
+end
+
 modulemt_.__index = function(table, key)
-	if key == 'send' then
-		return function(...) return Facade:send(...) end
-	else
-		return Yi.magic(key)
-	end
+	assert(Yi.module_names[key], "module doesn't exists: " .. key)
+	return Yi.magic(Yi.module_names[key])
 end
 
 function Yi.reload(path)
@@ -125,17 +126,17 @@ end
 function Facade:registerObserver(event, observer)
 	assert(not isempty(event), "event is empty")
 
-	if self.observerMap[event] == nil then
-		self.observerMap[event] = {observer}
+	if self.m_observer_map[event] == nil then
+		self.m_observer_map[event] = {observer}
 	else
-		table.insert(self.observerMap[event], observer)
+		table.insert(self.m_observer_map[event], observer)
 	end
 end
 
 function Facade:notifyObservers(event, ...)
 	assert(not isempty(event), "event is empty")
 
-	local observers_ = self.observerMap[event]
+	local observers_ = self.m_observer_map[event]
 	if observers_ then
 		for _,v in ipairs(observers_) do
 			v:notifyObserver(event, ...)
@@ -147,14 +148,16 @@ function Facade:registerActor(name)
 	assert(not isempty(name), "module name is empty")
 
 	local sp_ = string.explode(name, ".")
-	local mName = sp_[#sp_]			-- role.skill => skill
+	local unique_name = sp_[#sp_]			-- role.skill => skill
 
-	local actor_ = self.actors[mName]
-	assert(actor_ == nil, "module name repetition:", mName)
+	local actor_ = self.m_actors[name]
+	assert(actor_ == nil, "module name repetition:" .. name)
+	assert(Yi.module_names[unique_name] == nil, "unique name repetition:" .. unique_name)
+	Yi.module_names[unique_name] = name
 
 	local Actor_ = Yi.use(name..'.actor')
 	actor_ = Actor_:new(name)
-	self.actors[mName] = actor_
+	self.m_actors[name] = actor_
 	actor_:onRegister()
 
 	local interests_ = actor_:listInterests()
@@ -167,7 +170,7 @@ function Facade:registerActor(name)
 		self:registerObserver(interests_[i], observer_)
 	end
 
-	for event_, action_ in pairs(actor_.actions) do
+	for event_, action_ in pairs(actor_.m_actions) do
 		local observer_ = Observer:new()
 		observer_.name = name
 		observer_.context = actor_
@@ -185,7 +188,7 @@ function Facade:registerModules(modules)
 end
 
 function Facade:actor(name)
-	return self.actors[name]
+	return self.m_actors[name]
 end
 
 function Facade:send(event, ...)
@@ -199,20 +202,24 @@ local Actor = Yi.class("Actor")
 
 Yi.Actor = Actor
 
-Actor.actionDict = {}
-Actor.actions = {}
+Actor.m_action_dict = {}
+Actor.m_actions = {}
+Actor.static.instance_ = nil
+
+Actor.static.Instance = function()
+	if not Actor.instance_ then
+		Actor.instance_ = Actor:new()
+	end
+	return Actor.instance_
+end
 
 function Actor:initialize(name)
 	assert(not isempty(name), "module name is empty")
-	self.name = name
+	self.m_name = name
 end
 
 function Actor:newView(path)
-	return Yi.newView(self.name .. ".view." .. path)
-end
-
-function Actor:send(event, ...)
-	Facade:notifyObservers(event, ...)
+	return Yi.newView(self.m_name .. ".view." .. path)
 end
 
 function Actor:listInterests()
@@ -231,17 +238,17 @@ function Actor:response(action, handler)
 	assert(action, 'action is empty on response')
 	assert(isfunction(handler), 'handler is not function on response')
 
-	self.actionDict[action] = handler
+	self.m_action_dict[action] = handler
 end
 
 function Actor:on(action, param)
 	local on_resp_ = false
-	local on_ = self.actionDict[action]
+	local on_ = self.m_action_dict[action]
 	if isfunction(on_) then
 		on_resp_ = true
 	else
-		local resp_ = Yi.use(self.name .. '.response')
-		assert(resp_, self.name .. '.response is nil')
+		local resp_ = Yi.use(self.m_name .. '.response')
+		assert(resp_, self.m_name .. '.response is nil')
 		local act_ = string.explode(action, ".")
 		local method_ = act_[2]
 		on_ = resp_[method_]
