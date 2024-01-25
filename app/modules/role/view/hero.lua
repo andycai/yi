@@ -1,6 +1,6 @@
 if not SYSPATH then return end
 
-local meta = class("HeroPane")
+local meta = Class("HeroPane")
 
 function meta:hello()
 	print("hero pane say hello")

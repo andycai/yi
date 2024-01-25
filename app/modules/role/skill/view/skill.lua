@@ -1,6 +1,6 @@
 if not SYSPATH then return end
 
-local meta = class("SkillPane")
+local meta = Class("SkillPane")
 
 function meta:learn()
 	print("learn skill 141")

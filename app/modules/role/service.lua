@@ -1,6 +1,6 @@
 if not SYSPATH then return end
 
-load('system.helpers.csv')
+Load('system.helpers.csv')
 
 local meta = {}
 

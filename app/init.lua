@@ -1,27 +1,27 @@
 if not SYSPATH then return end
 
-app = app or {}
+App = App or {}
 
-class = Yi.class
+Class = Yi.class
 Event = Yi.Event
-load = Yi.load
-use = Yi.use
-magic = Yi.magic
+Load = Yi.load
+Use = Yi.use
+Magic = Yi.magic
 __ = Yi.__
-go = Yi.go
+Go = Yi.go
 
-use("init")				-- load modules.init
-load('data.init')
+Use("init")				-- load modules.init
+Load('data.init')
 
 local function requestServer( ... )
 	-- request to server
 end
 Yi.request = requestServer
 
-function route(response)
+function Route(response)
 	xpcall(function()
 		if response then
-			local json = load('libs.dkjson')
+			local json = Load('libs.dkjson')
 			local resp = json.decode(response)
 			local actions = string.explode(resp.act, ".")
 			local moduleName = actions[1]
@@ -35,6 +35,6 @@ function route(response)
 	end, __G__TRACKBACK__)
 end
 
-function app.run()
+function App.run()
 	Yi.facade:send(Event.EVENT_APP_START, "startup")
 end

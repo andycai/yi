@@ -7,7 +7,7 @@ local modules_init_ = {
 	nil,
 }
 
-function app.entity(name)
+function App.entity(name)
 	return Yi.load('data.entity.' .. name)
 end
 

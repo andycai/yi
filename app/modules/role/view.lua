@@ -2,7 +2,7 @@ if not SYSPATH then return end
 
 local meta = {}
 
-local role = magic('role')
+local role = Magic('role')
 
 function meta:hello()
 	print("role pane say hello")

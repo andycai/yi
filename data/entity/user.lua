@@ -2,7 +2,7 @@ if not SYSPATH then return end
 
 -- UserEntity 可以有多个RoleEntity
 
-local meta = class("EntityUser")
+local meta = Class("EntityUser")
 
 function meta:initialize()
 	-- body

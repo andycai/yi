@@ -1,6 +1,6 @@
 if not SYSPATH then return end
 
-local meta = class("EntityEquip")
+local meta = Class("EntityEquip")
 
 function meta:initialize()
 	-- body

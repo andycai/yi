@@ -1,6 +1,6 @@
 if not SYSPATH then return end
 
-local meta = class("SkilActor", Yi.Actor)
+local meta = Class("SkilActor", Yi.Actor)
 
 function meta:listInterests()
 	return {
@@ -15,7 +15,7 @@ function meta:action_app_start(...)
 	puts("app start")
 	puts(__("role skill initilize %s", "skill 143"))
 
-	local pane = go.skill.newview('skill')
+	local pane = Go.skill.newview('skill')
 	pane:learn()
 end
 

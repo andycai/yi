@@ -1,6 +1,6 @@
 if not SYSPATH then return end
 
-local meta = class("RoleActor", Yi.Actor)
+local meta = Class("RoleActor", Yi.Actor)
 
 function meta:listInterests()
 	return {
@@ -19,18 +19,18 @@ function meta:action_app_start(...)
 	puts("app start")
 	puts(__("Testing %s", "RoleActor"))
 
-	local nums, data, labels = go.role.service:parseCsv()
+	local nums, data, labels = Go.role.service:parseCsv()
 	puts("csv data:", data)
 
-	go.role.model:setNick('babala')
-	go.role.view:hello()
+	Go.role.model:setNick('babala')
+	Go.role.view:hello()
 
-	local heroPane = go.role.newview('hero')
+	local heroPane = Go.role.newview('hero')
 	heroPane:hello()
 
-	route('{"act":"role.OnSayHello", "param":{"name":"Andy"}}')
+	Route('{"act":"role.OnSayHello", "param":{"name":"Andy"}}')
 
-	go.send(Event.EVENT_BAG_OPEN, 'open bag please')
+	Go.send(Event.EVENT_BAG_OPEN, 'open bag please')
 end
 
 function meta:action_say_hello(...)

@@ -17,7 +17,7 @@ local function main()
 		log = true,
 		lang = 'zh_cn'
 	}
-	app.run()
+	App.run()
 end
 
 xpcall(main, __G__TRACKBACK__)
