@@ -4,8 +4,7 @@ Yi = {
 	lang = 'zh_cn',
 	log = false,
 	init = false,
-	loaded = {},
-	magic_modules = {},
+	modules = {},
 	module_names = {}
 }
 
@@ -17,9 +16,6 @@ local Facade = {
 Yi.facade = Facade
 
 function Yi.load(path)
-	if not Yi.loaded[path] then
-		Yi.loaded[path] = true
-	end
 	return require(path)
 end
 
@@ -37,9 +33,9 @@ function Yi.message(file, path)
 	return messages[path]
 end
 
-function Yi.magic(module_name)
-	if Yi.magic_modules[module_name] then
-		return Yi.magic_modules[module_name]
+function Yi.mod(module_name)
+	if Yi.modules[module_name] then
+		return Yi.modules[module_name]
 	end
 
 	local obj ={}
@@ -55,7 +51,7 @@ function Yi.magic(module_name)
 	mt.__index = function(table, key)
 		return Yi.use(string.format('%s.%s', module_name, key))
 	end
-	Yi.magic_modules[module_name] = obj
+	Yi.modules[module_name] = obj
 
 	return obj
 end
@@ -69,7 +65,7 @@ local modulemt_ = {}
 setmetatable(Yi.go, modulemt_)
 modulemt_.__index = function(table, key)
 	assert(Yi.module_names[key], "module doesn't exists: " .. key)
-	return Yi.magic(Yi.module_names[key])
+	return Yi.mod(Yi.module_names[key])
 end
 
 function Yi.reload(path)
@@ -77,8 +73,8 @@ function Yi.reload(path)
 end
 
 Yi.class = Yi.load('libs.middleclass')
-Yi.load('system.ext.init')
-Yi.load('system.helpers.init')
+Yi.load('core.ext.init')
+Yi.load('core.helpers.init')
 
 function Yi:init(settings)
 	if self.init then
@@ -97,9 +93,9 @@ function Yi:init(settings)
 	end
 end
 
---[[
+--[==[
 Event
---]]
+--]==]
 
 Yi.Event = {}
 Yi.Event.send = function(...)
@@ -112,9 +108,9 @@ e_mt.__index = function(table, key)
 	return 'Event.' .. key
 end
 
---[[
+--[==[
 class Observer
---]]
+--]==]
 local Observer = Yi.class("Observer")
 
 function Observer:notifyObserver(event, ...)
@@ -195,9 +191,9 @@ function Facade:send(event, ...)
 	Facade:notifyObservers(event, ...)
 end
 
---[[
+--[==[
 class Actor
---]]
+--]==]
 local Actor = Yi.class("Actor")
 
 Yi.Actor = Actor

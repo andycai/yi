@@ -4,7 +4,7 @@ Class = Yi.class
 Event = Yi.Event
 Load = Yi.load
 Use = Yi.use
-Magic = Yi.magic
+Mod = Yi.mod
 __ = Yi.__
 Go = Yi.go
 

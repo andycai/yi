@@ -14,11 +14,11 @@ function meta:onRegister()
 end
 
 function meta:action_app_start(...)
-	puts("app start")
-	puts(__("Testing %s", "RoleActor"))
+	Puts("app start")
+	Puts(__("Testing %s", "RoleActor"))
 
 	local nums, data, labels = Go.role.service:parseCsv()
-	puts("csv data:", data)
+	Puts("csv data:", data)
 
 	Go.role.model:setNick('babala')
 	Go.role.view:hello()
@@ -32,7 +32,7 @@ function meta:action_app_start(...)
 end
 
 function meta:action_say_hello(...)
-	puts("role bag info:")
+	Puts("role bag info:")
 
 	self:request("role.sayHello", {type=1})
 	self:response("role.onSayHello", on_say_hello_)

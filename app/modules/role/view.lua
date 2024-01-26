@@ -1,6 +1,6 @@
 local meta = {}
 
-local role = Magic('role')
+local role = Mod('role')
 
 function meta:hello()
 	print("role pane say hello")

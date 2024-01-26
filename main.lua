@@ -6,11 +6,11 @@ function __G__TRACKBACK__(msg)
 end
 
 APPPATH = 'app.'
-SYSPATH = 'system.'
+COREPATH = 'core.'
 LIBPATH = 'libs.'
 
 local function main()
-	require(SYSPATH .. 'yi')
+	require(COREPATH .. 'yi')
 
 	Yi.load('app.init')
 	Yi:init{

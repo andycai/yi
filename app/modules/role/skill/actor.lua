@@ -10,8 +10,8 @@ function meta:onRegister()
 end
 
 function meta:action_app_start(...)
-	puts("app start")
-	puts(__("role skill initilize %s", "skill 143"))
+	Puts("app start")
+	Puts(__("role skill initilize %s", "skill 143"))
 
 	local pane = Go.skill.newview('skill')
 	pane:learn()

@@ -1,7 +1,7 @@
 Yi = Yi or {}
 
-Yi.load('system.helpers.var')
-Yi.load('system.helpers.i18n')
+Yi.load('core.helpers.var')
+Yi.load('core.helpers.i18n')
 
 function Yi.tostring(obj, ...)
 	if type(obj) == "table" then
@@ -17,7 +17,7 @@ function Yi.tostring(obj, ...)
 	return obj
 end
 
-function sputs(obj, ...)
+function Sputs(obj, ...)
 	if type(obj) == "table" then
 		obj = Yi.tostring(obj)
 	else
@@ -38,8 +38,8 @@ function sputs(obj, ...)
 	return obj
 end
 
-function puts(obj, ...)
-	print(sputs(obj, ...))
+function Puts(obj, ...)
+	print(Sputs(obj, ...))
 end
 
 function Yi.appendPath(...)

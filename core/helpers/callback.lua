@@ -14,7 +14,7 @@ Yi.callback = function(callback)
 		end
 
 		local args = self.scope and {self.scope, ...} or {...}
-		self.callback(unpack(args))
+		self.callback(table.unpack(args))
 	end
 
 	setmetatable(object, object)
