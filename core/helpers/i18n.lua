@@ -4,11 +4,6 @@ local registry = { }
 local current_namespace
 local fallback_namespace
 
-local unpack = unpack
-if table.unpack then
-	unpack = table.unpack
-end
-
 local text = {
 	setnamespace = function(self, namespace)
 		current_namespace = namespace
@@ -31,7 +26,7 @@ local text = {
 
 local __meta = {
 	__call = function(self, key, ...)
-		vars = {...}
+		local vars = {...}
 
 		local str = registry[current_namespace][key] or registry[fallback_namespace][key]
 
@@ -45,7 +40,7 @@ local __meta = {
 			table.insert(strings, tostring(v))
 		end
 
-		return #strings > 0 and str:format(unpack(strings)) or str
+		return #strings > 0 and str:format(table.unpack(strings)) or str
 	end;
 
 	__index = function(self, key)
