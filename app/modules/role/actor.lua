@@ -26,7 +26,7 @@ function meta:actionAppStart(...)
 	local heroPane = Go.role.newView('hero')
 	heroPane:hello()
 
-	Route('{"act":"role.OnSayHello", "param":{"name":"Andy"}}')
+	Route('{"act":"role.onSayHello", "param":{"name":"Andy"}}')
 
 	Event.send(Event.EVENT_BAG_OPEN, 'open bag please')
 end

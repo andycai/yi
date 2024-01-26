@@ -115,47 +115,47 @@ class Observer
 --]==]
 local Observer = Yi.class("Observer")
 
-function Observer:notifyObserver(event, ...)
+function Observer:notifyObserver(...)
 	if self.action and IsFunction(self.action) then
 		self.action(self.context, ...)
 	end
 end
 
-function Facade:registerObserver(event, observer)
-	assert(not IsEmpty(event), "event is empty")
+function Facade:registerObserver(eventName, observer)
+	assert(not IsEmpty(eventName), "event is empty")
 
-	if self._observerMap[event] == nil then
-		self._observerMap[event] = {observer}
+	if self._observerMap[eventName] == nil then
+		self._observerMap[eventName] = {observer}
 	else
-		table.insert(self._observerMap[event], observer)
+		table.insert(self._observerMap[eventName], observer)
 	end
 end
 
-function Facade:notifyObservers(event, ...)
-	assert(not IsEmpty(event), "event is empty")
+function Facade:notifyObservers(eventName, ...)
+	assert(not IsEmpty(eventName), "event is empty")
 
-	local observers_ = self._observerMap[event]
+	local observers_ = self._observerMap[eventName]
 	if observers_ then
 		for _,v in ipairs(observers_) do
-			v:notifyObserver(event, ...)
+			v:notifyObserver(...)
 		end
 	end
 end
 
-function Facade:registerActor(name)
-	assert(not IsEmpty(name), "module name is empty")
+function Facade:registerActor(moduleName)
+	assert(not IsEmpty(moduleName), "module name is empty")
 
-	local sp_ = string.explode(name, ".")
+	local sp_ = string.explode(moduleName, ".")
 	local unique_name = sp_[#sp_]			-- support submodule like role.skill => skill
 
-	local actor_ = self._actors[name]
-	assert(actor_ == nil, "module name repetition:" .. name)
+	local actor_ = self._actors[moduleName]
+	assert(actor_ == nil, "module name repetition:" .. moduleName)
 	assert(Yi._moduleNames[unique_name] == nil, "unique name repetition:" .. unique_name)
-	Yi._moduleNames[unique_name] = name
+	Yi._moduleNames[unique_name] = moduleName
 
-	local Actor_ = Yi.use(name..'.actor')
-	actor_ = Actor_:new(name)
-	self._actors[name] = actor_
+	local Actor_ = Yi.use(moduleName..'.actor')
+	actor_ = Actor_:new(moduleName)
+	self._actors[moduleName] = actor_
 	actor_:onRegister()
 
 	local interests_ = actor_:listInterests()
@@ -163,7 +163,7 @@ function Facade:registerActor(name)
 		assert(not IsEmpty(eventName), "listInterests key is empty")
 		assert(IsFunction(action), "listInterests value is not function, event name: " .. eventName)
 		local observer_ = Observer:new()
-		observer_.name = name
+		observer_.name = moduleName
 		observer_.context = actor_
 		observer_.action = action
 		self:registerObserver(eventName, observer_)
@@ -182,8 +182,8 @@ function Facade:actor(name)
 	return self._actors[name]
 end
 
-function Facade:send(event, ...)
-	Facade:notifyObservers(event, ...)
+function Facade:send(eventName, ...)
+	Facade:notifyObservers(eventName, ...)
 end
 
 --[==[
@@ -205,7 +205,7 @@ end
 
 function Actor:initialize(name)
 	assert(not IsEmpty(name), "module name is empty")
-	self.m_name = name
+	self._name = name
 end
 
 function Actor:listInterests()
@@ -244,8 +244,8 @@ function Actor:on(action, param)
 	if IsFunction(on_) then
 		on_resp_ = true
 	else
-		local resp_ = Yi.use(self.m_name .. '.response')
-		assert(resp_, self.m_name .. '.response is nil')
+		local resp_ = Yi.use(self._name .. '.response')
+		assert(resp_, self._name .. '.response is nil')
 		local act_ = string.explode(action, ".")
 		local method_ = act_[2]
 		on_ = resp_[method_]
@@ -256,7 +256,7 @@ function Actor:on(action, param)
 	if on_resp_ then
 		on_(param, self)
 	else
-		print(string.format('no response on action' .. action))
+		print(format('no response on action' .. action))
 	end
 end
 
