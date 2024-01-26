@@ -23,7 +23,7 @@ function Yi.use(path)
 	return Yi.load(APPPATH .. 'modules.' .. path)
 end
 
-function Yi.newview(path)
+function Yi.newView(path)
 	local View_ = Yi.use(path)
 	return View_:new()
 end
@@ -39,10 +39,10 @@ function Yi.mod(module_name)
 	end
 
 	local obj ={}
-	obj.newview = function(path)
-		return Yi.newview(format('%s.view.%s', module_name, path))
+	obj.newView = function(path)
+		return Yi.newView(format('%s.view.%s', module_name, path))
 	end
-	obj.loadview = function(path)
+	obj.loadView = function(path)
 		return Yi.use(format('%s.view.%s', module_name, path))
 	end
 
@@ -114,13 +114,13 @@ class Observer
 local Observer = Yi.class("Observer")
 
 function Observer:notifyObserver(event, ...)
-	if self.action and isfunction(self.action) then
+	if self.action and IsFunction(self.action) then
 		self.action(self.context, ...)
 	end
 end
 
 function Facade:registerObserver(event, observer)
-	assert(not isempty(event), "event is empty")
+	assert(not IsEmpty(event), "event is empty")
 
 	if self.m_observer_map[event] == nil then
 		self.m_observer_map[event] = {observer}
@@ -130,7 +130,7 @@ function Facade:registerObserver(event, observer)
 end
 
 function Facade:notifyObservers(event, ...)
-	assert(not isempty(event), "event is empty")
+	assert(not IsEmpty(event), "event is empty")
 
 	local observers_ = self.m_observer_map[event]
 	if observers_ then
@@ -141,7 +141,7 @@ function Facade:notifyObservers(event, ...)
 end
 
 function Facade:registerActor(name)
-	assert(not isempty(name), "module name is empty")
+	assert(not IsEmpty(name), "module name is empty")
 
 	local sp_ = string.explode(name, ".")
 	local unique_name = sp_[#sp_]			-- role.skill => skill
@@ -210,7 +210,7 @@ Actor.static.instance = function()
 end
 
 function Actor:initialize(name)
-	assert(not isempty(name), "module name is empty")
+	assert(not IsEmpty(name), "module name is empty")
 	self.m_name = name
 end
 
@@ -221,14 +221,14 @@ end
 function Actor:onRegister() end
 
 function Actor:request(action, param)
-	if isfunction(Yi.request) then
+	if IsFunction(Yi.request) then
 		Yi.request(action, param)
 	end
 end
 
 function Actor:response(action, handler)
 	assert(action, 'action is empty on response')
-	assert(isfunction(handler), 'handler is not function on response')
+	assert(IsFunction(handler), 'handler is not function on response')
 
 	self.m_action_dict[action] = handler
 end
@@ -236,7 +236,7 @@ end
 function Actor:on(action, param)
 	local on_resp_ = false
 	local on_ = self.m_action_dict[action]
-	if isfunction(on_) then
+	if IsFunction(on_) then
 		on_resp_ = true
 	else
 		local resp_ = Yi.use(self.m_name .. '.response')
@@ -244,7 +244,7 @@ function Actor:on(action, param)
 		local act_ = string.explode(action, ".")
 		local method_ = act_[2]
 		on_ = resp_[method_]
-		if isfunction(on_) then
+		if IsFunction(on_) then
 			on_resp_ = true
 		end
 	end
