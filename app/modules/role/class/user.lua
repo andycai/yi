@@ -1,5 +1,3 @@
--- UserEntity 可以有多个RoleEntity
-
 local meta = Class("EntityUser")
 
 function meta:initialize()

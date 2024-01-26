@@ -23,11 +23,6 @@ function Yi.use(path)
 	return Yi.load(APPPATH .. 'modules.' .. path)
 end
 
-function Yi.newView(path)
-	local View_ = Yi.use(path)
-	return View_:new()
-end
-
 function Yi.message(file, path)
 	local messages = Yi.load('app.messages.' .. path)
 	return messages[path]
@@ -41,11 +36,18 @@ function Yi.mod(moduleName)
 	local obj ={
 		moduleName = moduleName,
 	}
-	obj.newView = function(path)
-		return Yi.newView(format('%s.view.%s', moduleName, path))
+
+	obj.newObj = function(path)
+		local cls = Yi.use(format('%s.class.%s', moduleName, path))
+		return cls:new()
 	end
-	obj.loadView = function(path)
-		return Yi.use(format('%s.view.%s', moduleName, path))
+
+	obj.newWidget = function(path)
+		local cls = Yi.use(format('%s.widget.%s', moduleName, path))
+		return cls:new()
+	end
+	obj.loadWidget = function(path)
+		return Yi.use(format('%s.widget.%s', moduleName, path))
 	end
 
 	local mt = {}

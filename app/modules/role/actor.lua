@@ -1,5 +1,7 @@
 local meta = Class("RoleActor", Yi.Actor)
 
+local role = Mod("role")
+
 function meta:listInterests()
 	return {
 		[Event.EVENT_APP_START] = self.actionAppStart,
@@ -8,22 +10,27 @@ function meta:listInterests()
 end
 
 function meta:onRegister()
-	-- 与 listInterests 返回数组等价
-	-- self.addListener(Event.EVENT_APP_START, self.actionAppStart)
-	-- self.addListener(Event.EVENT_SAY_HELLO, self.actionSayHello)
+	-- listening event, as same as meta:listInterests()
+	-- self:addListener(Event.EVENT_APP_START, self.actionAppStart)
+	-- self:addListener(Event.EVENT_SAY_HELLO, self.actionSayHello)
+
+	-- initialize view or model ...
+	-- role.model.init()
+	-- role.view.init()
 end
 
-function meta:actionAppStart(...)
+function meta:actionAppStart(actionName, ...)
 	Puts("app start")
+	Puts("action name: " .. actionName)
 	Puts(__("Testing %s", "RoleActor"))
 
 	local nums, data, labels = Go.role.service:parseCsv()
 	Puts("csv data:", data)
 
-	Go.role.model:setNick('babala')
-	Go.role.view:hello()
+	role.model:setNick('babala')
+	role.view:hello()
 
-	local heroPane = Go.role.newView('hero')
+	local heroPane = Go.role.newWidget('hero')
 	heroPane:hello()
 
 	Route('{"act":"role.onSayHello", "param":{"name":"Andy"}}')

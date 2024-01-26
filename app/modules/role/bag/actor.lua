@@ -14,7 +14,7 @@ function meta:actionOpenBag(msg)
 	Puts(msg)
 	Puts(__("role bag initilize %s", "grid 8*8"))
 
-	local pane = Go.bag.newView('grid')
+	local pane = Go.bag.newWidget('grid')
 	pane:cleanup()
 end
 
