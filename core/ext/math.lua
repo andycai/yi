@@ -1,5 +1,8 @@
 function math.round(num)
-	return math.floor(num + 0.5)
+	local f = math.floor(num)
+	if num == f then return f
+	else return math.floor(num + 0.5)
+	end
 end
 
 function math.randseed()
