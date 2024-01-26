@@ -159,21 +159,14 @@ function Facade:registerActor(name)
 	actor_:onRegister()
 
 	local interests_ = actor_:listInterests()
-	local len_ = #interests_
-	for i = 1, len_, 2 do
+	for eventName, action in pairs(interests_) do
+		assert(not IsEmpty(eventName), "listInterests key is empty")
+		assert(IsFunction(action), "listInterests value is not function, event name: " .. eventName)
 		local observer_ = Observer:new()
 		observer_.name = name
 		observer_.context = actor_
-		observer_.action = interests_[i+1]
-		self:registerObserver(interests_[i], observer_)
-	end
-
-	for event_, action_ in pairs(actor_.m_actions) do
-		local observer_ = Observer:new()
-		observer_.name = name
-		observer_.context = actor_
-		observer_.action = action_
-		self:registerObserver(event_, observer_)
+		observer_.action = action
+		self:registerObserver(eventName, observer_)
 	end
 end
 
@@ -200,8 +193,7 @@ local Actor = Yi.class("Actor")
 
 Yi.Actor = Actor
 
-Actor.m_action_dict = {}
-Actor.m_actions = {}
+Actor._handlers = {}
 Actor.static.instance_ = nil
 
 Actor.static.instance = function()
@@ -222,22 +214,33 @@ end
 
 function Actor:onRegister() end
 
+function Actor:addListener(eventName, action)
+	assert(not IsEmpty(eventName), 'event is empty on addListener')
+	assert(IsFunction(action), 'action is not function on addListener')
+
+	local observer_ = Observer:new()
+	observer_.name = eventName
+	observer_.context = self
+	observer_.action = action
+	Facade:registerObserver(eventName, observer_)
+end
+
 function Actor:request(action, param)
 	if IsFunction(Yi.request) then
 		Yi.request(action, param)
 	end
 end
 
-function Actor:response(action, handler)
-	assert(action, 'action is empty on response')
+function Actor:response(name, handler)
+	assert(name, 'name is empty on response')
 	assert(IsFunction(handler), 'handler is not function on response')
 
-	self.m_action_dict[action] = handler
+	self._handlers[name] = handler
 end
 
 function Actor:on(action, param)
 	local on_resp_ = false
-	local on_ = self.m_action_dict[action]
+	local on_ = self._handlers[action]
 	if IsFunction(on_) then
 		on_resp_ = true
 	else
