@@ -13,7 +13,7 @@ function meta:action_app_start(...)
 	Puts("app start")
 	Puts(__("role skill initilize %s", "skill 143"))
 
-	local pane = Go.skill.newview('skill')
+	local pane = Go.skill.newView('skill')
 	pane:learn()
 end
 

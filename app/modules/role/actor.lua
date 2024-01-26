@@ -4,13 +4,14 @@ function meta:listInterests()
 	return {
 		Event.EVENT_APP_START, self.action_app_start,
 		Event.EVENT_SAY_HELLO, self.action_say_hello,
+		-- [Event.EVENT_SAY_HELLO] = self.action_say_hello,
 	}
 end
 
 function meta:onRegister()
 	-- 与 listInterests 返回数组等价
-	-- self.actions[Event.EVENT_APP_START] = self.action_app_start
-	-- self.actions[Event.EVENT_SAY_HELLO] = self.action_say_hello
+	-- self.addListener(Event.EVENT_APP_START, self.action_app_start)
+	-- self.addListener(Event.EVENT_SAY_HELLO, self.action_say_hello)
 end
 
 function meta:action_app_start(...)
@@ -23,12 +24,12 @@ function meta:action_app_start(...)
 	Go.role.model:setNick('babala')
 	Go.role.view:hello()
 
-	local heroPane = Go.role.newview('hero')
+	local heroPane = Go.role.newView('hero')
 	heroPane:hello()
 
 	Route('{"act":"role.OnSayHello", "param":{"name":"Andy"}}')
 
-	Go.send(Event.EVENT_BAG_OPEN, 'open bag please')
+	Event.send(Event.EVENT_BAG_OPEN, 'open bag please')
 end
 
 function meta:action_say_hello(...)

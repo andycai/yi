@@ -34,5 +34,5 @@ function Route(response)
 end
 
 function App.run()
-	Yi.facade:send(Event.EVENT_APP_START, "startup")
+	Event.send(Event.EVENT_APP_START, "startup")
 end

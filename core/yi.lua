@@ -1,16 +1,16 @@
 local format = string.format
 
 Yi = {
-	lang = 'zh_cn',
-	log = false,
-	init = false,
-	modules = {},
-	module_names = {}
+	_lang = 'zh_cn',
+	_log = false,
+	_isInit = false,
+	_modules = {},
+	_moduleNames = {}
 }
 
 local Facade = {
-	m_observer_map = {},
-	m_actors = {}
+	_observerMap = {},
+	_actors = {}
 }
 
 Yi.facade = Facade
@@ -33,25 +33,27 @@ function Yi.message(file, path)
 	return messages[path]
 end
 
-function Yi.mod(module_name)
-	if Yi.modules[module_name] then
-		return Yi.modules[module_name]
+function Yi.mod(moduleName)
+	if Yi._modules[moduleName] then
+		return Yi._modules[moduleName]
 	end
 
-	local obj ={}
+	local obj ={
+		moduleName = moduleName,
+	}
 	obj.newView = function(path)
-		return Yi.newView(format('%s.view.%s', module_name, path))
+		return Yi.newView(format('%s.view.%s', moduleName, path))
 	end
 	obj.loadView = function(path)
-		return Yi.use(format('%s.view.%s', module_name, path))
+		return Yi.use(format('%s.view.%s', moduleName, path))
 	end
 
 	local mt = {}
 	setmetatable(obj, mt)
-	mt.__index = function(table, key)
-		return Yi.use(string.format('%s.%s', module_name, key))
+	mt.__index = function(mtable, key)
+		return Yi.use(format('%s.%s', mtable.moduleName, key))
 	end
-	Yi.modules[module_name] = obj
+	Yi._modules[moduleName] = obj
 
 	return obj
 end
@@ -63,9 +65,9 @@ end
 
 local modulemt_ = {}
 setmetatable(Yi.go, modulemt_)
-modulemt_.__index = function(table, key)
-	assert(Yi.module_names[key], "module doesn't exists: " .. key)
-	return Yi.mod(Yi.module_names[key])
+modulemt_.__index = function(_, key)
+	assert(Yi._moduleNames[key], "module doesn't exists: " .. key)
+	return Yi.mod(Yi._moduleNames[key])
 end
 
 function Yi.reload(path)
@@ -77,19 +79,19 @@ Yi.load('core.ext.init')
 Yi.load('core.helpers.init')
 
 function Yi:init(settings)
-	if self.init then
+	if self._isInit then
 		return
 	end
 
-	self.init = true
+	self._isInit = true
 
 	if settings.log then
-		self.log = settings.log
+		self._log = settings.log
 	end
 
 	if settings.lang then
-		self.lang = settings.lang
-		Yi.load('app.i18n.' .. self.lang)
+		self._lang = settings.lang
+		Yi.load('app.i18n.' .. self._lang)
 	end
 end
 
@@ -122,17 +124,17 @@ end
 function Facade:registerObserver(event, observer)
 	assert(not IsEmpty(event), "event is empty")
 
-	if self.m_observer_map[event] == nil then
-		self.m_observer_map[event] = {observer}
+	if self._observerMap[event] == nil then
+		self._observerMap[event] = {observer}
 	else
-		table.insert(self.m_observer_map[event], observer)
+		table.insert(self._observerMap[event], observer)
 	end
 end
 
 function Facade:notifyObservers(event, ...)
 	assert(not IsEmpty(event), "event is empty")
 
-	local observers_ = self.m_observer_map[event]
+	local observers_ = self._observerMap[event]
 	if observers_ then
 		for _,v in ipairs(observers_) do
 			v:notifyObserver(event, ...)
@@ -144,16 +146,16 @@ function Facade:registerActor(name)
 	assert(not IsEmpty(name), "module name is empty")
 
 	local sp_ = string.explode(name, ".")
-	local unique_name = sp_[#sp_]			-- role.skill => skill
+	local unique_name = sp_[#sp_]			-- support submodule like role.skill => skill
 
-	local actor_ = self.m_actors[name]
+	local actor_ = self._actors[name]
 	assert(actor_ == nil, "module name repetition:" .. name)
-	assert(Yi.module_names[unique_name] == nil, "unique name repetition:" .. unique_name)
-	Yi.module_names[unique_name] = name
+	assert(Yi._moduleNames[unique_name] == nil, "unique name repetition:" .. unique_name)
+	Yi._moduleNames[unique_name] = name
 
 	local Actor_ = Yi.use(name..'.actor')
 	actor_ = Actor_:new(name)
-	self.m_actors[name] = actor_
+	self._actors[name] = actor_
 	actor_:onRegister()
 
 	local interests_ = actor_:listInterests()
@@ -184,7 +186,7 @@ function Facade:registerModules(modules)
 end
 
 function Facade:actor(name)
-	return self.m_actors[name]
+	return self._actors[name]
 end
 
 function Facade:send(event, ...)
