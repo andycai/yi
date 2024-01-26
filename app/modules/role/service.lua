@@ -1,5 +1,3 @@
-if not SYSPATH then return end
-
 Load('system.helpers.csv')
 
 local meta = {}

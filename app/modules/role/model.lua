@@ -1,5 +1,3 @@
-if not SYSPATH then return end
-
 local meta = {}
 
 function meta:setNick(nick)

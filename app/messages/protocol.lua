@@ -1,5 +1,3 @@
-if not SYSPATH then return end
-
 return {
 	['1001'] = '成功',
 	['1002'] = '失败',

@@ -1,5 +1,3 @@
-if not SYSPATH then return end
-
 local meta = Class("RoleActor", Yi.Actor)
 
 function meta:listInterests()

@@ -1,5 +1,3 @@
-if not SYSPATH then return end
-
 local meta = Class("SkillPane")
 
 function meta:learn()

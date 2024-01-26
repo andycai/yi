@@ -1,5 +1,3 @@
-if not SYSPATH then return end
-
 local modules_init_ = {
 	"role",
 	"role.skill",

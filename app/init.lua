@@ -1,5 +1,3 @@
-if not SYSPATH then return end
-
 App = App or {}
 
 Class = Yi.class

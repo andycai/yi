@@ -1,5 +1,3 @@
-if not SYSPATH then return end
-
 Yi = Yi or {}
 
 Yi.load('system.helpers.var')

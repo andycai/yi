@@ -1,5 +1,3 @@
-if not SYSPATH then return end
-
 local format = string.format
 
 Yi = {
