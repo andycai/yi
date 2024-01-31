@@ -1,3 +1,6 @@
+local string = string
+local table = table
+
 Yi = Yi or {}
 
 Yi.load('core.helpers.var')
@@ -100,11 +103,14 @@ function Yi.eval(input)
 			input = "do return (" .. input .. ") end"
 		end
 
-		local code, err = loadstring(input, "REPL")
+		local code, err = load(input, "REPL")
+		-- local code, err = loadstring(input, "REPL")
 		if err then
 			error("Syntax Error: " .. err)
 		else
-			print(code())
+			if type(code) == "function" then
+				print(code())
+			end
 		end
 	end)
 end
@@ -124,18 +130,18 @@ end
 
 function Yi.clone(object)
 	local lookup_table = {}
-	local function _copy(object)
-		if type(object) ~= "table" then
-			return object
-		elseif lookup_table[object] then
-			return lookup_table[object]
+	local function _copy(obj)
+		if type(obj) ~= "table" then
+			return obj
+		elseif lookup_table[obj] then
+			return lookup_table[obj]
 		end
 		local new_table = {}
-		lookup_table[object] = new_table
-		for key, value in pairs(object) do
+		lookup_table[obj] = new_table
+		for key, value in pairs(obj) do
 			new_table[_copy(key)] = _copy(value)
 		end
-		return setmetatable(new_table, getmetatable(object))
+		return setmetatable(new_table, getmetatable(obj))
 	end
 	return _copy(object)
 end
