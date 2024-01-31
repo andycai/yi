@@ -34,14 +34,14 @@ function Yi.loadcsv(path)
 	if path == nil then return nil, nil, nil end
 
 	local data = {}
-	local nums, line
+	local nums, lines
 	nums, lines = loadFile(path)
 
-	local labelNum, labels, tmpNum
+	local labels
 
-	labelNum, labels = makeLine(lines[1])
+	_, labels = makeLine(lines[1])
 	for i=2, nums do
-		tmpNum, data[i-1] = makeLine(lines[i])
+		J_, data[i-1] = makeLine(lines[i])
 	end
 
 	return nums-1, data, labels
@@ -51,11 +51,11 @@ function Yi.loadcsvdata(path)
 	if path == nil then return nil, nil, nil end
 
 	local data = {}
-	local nums, line, tmpNum
+	local nums, lines
 	nums, lines = loadFile(path)
 
 	for i=1, nums do
-		tmpNum, data[i-1] = makeLine(lines[i])
+		_, data[i-1] = makeLine(lines[i])
 	end
 
 	return nums, data

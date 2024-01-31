@@ -78,7 +78,7 @@ end
 
 Yi.class = Yi.load('libs.middleclass')
 Yi.load('core.ext.init')
-Yi.load('core.helpers.init')
+Yi.load('core.utils.init')
 
 function Yi:init(settings)
 	if self._isInit then

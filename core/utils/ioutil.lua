@@ -41,7 +41,7 @@ function Yi.fexists(path)
 end
 
 function Yi.filesize(path)
-	local size = false
+	local size = 0
 	local file = io.open(path, "r")
 	if file then
 		local current = file:seek()
@@ -81,7 +81,7 @@ end
 
 -- Helper function that loads a file into ram.
 function Yi.loadfile(fromDir, name)
-	local intmp = assert(io.open(from_dir .. name, 'r'))
+	local intmp = assert(io.open(fromDir .. name, 'r'))
 	local content = intmp.read("*a")
 	intmp:close()
 
