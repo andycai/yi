@@ -1,15 +1,18 @@
-App = App or {}
+local meta = {}
 
-Class = Yi.class
 Event = Yi.Event
-Load = Yi.load
 Use = Yi.use
 Mod = Yi.mod
-__ = Yi.__
 Go = Yi.go
 
-Use("init")				-- load modules.init
-Load('data.init')
+Class = require('libs.middleclass')
+__ = require('core.utils.i18n')
+
+require('core.ext.init')
+require('core.utils.init')
+require('core.utils.var')
+require('app.i18n.' .. Yi.lang())
+require("app.modules.init")
 
 local function requestServer( ... )
 	-- request to server
@@ -19,7 +22,7 @@ Yi.request = requestServer
 function Route(response)
 	xpcall(function()
 		if response then
-			local json = Load('libs.dkjson')
+			local json = require('libs.dkjson')
 			local resp = json.decode(response)
 			local actions = string.explode(resp.act, ".")
 			local moduleName = actions[1]
@@ -33,6 +36,8 @@ function Route(response)
 	end, __G__TRACKBACK__)
 end
 
-function App.run()
+function meta.run()
 	Event.send(Event.EVENT_APP_START, "startup")
 end
+
+return meta

@@ -15,16 +15,14 @@ local Facade = {
 
 Yi.facade = Facade
 
-function Yi.load(path)
-	return require(path)
-end
+local class = require('libs.middleclass')
 
 function Yi.use(path)
-	return Yi.load(APPPATH .. 'modules.' .. path)
+	return require(APPPATH .. 'modules.' .. path)
 end
 
 function Yi.message(file, path)
-	local messages = Yi.load('app.messages.' .. path)
+	local messages = require(APPPATH .. 'messages.' .. path)
 	return messages[path]
 end
 
@@ -76,25 +74,24 @@ function Yi.reload(path)
 	package.loaded[path] = nil
 end
 
-Yi.class = Yi.load('libs.middleclass')
-Yi.load('core.ext.init')
-Yi.load('core.utils.init')
-
-function Yi:init(settings)
-	if self._isInit then
+function Yi.init(settings)
+	if Yi._isInit then
 		return
 	end
 
-	self._isInit = true
+	Yi._isInit = true
 
 	if settings.log then
-		self._log = settings.log
+		Yi._log = settings.log
 	end
 
 	if settings.lang then
-		self._lang = settings.lang
-		Yi.load('app.i18n.' .. self._lang)
+		Yi._lang = settings.lang
 	end
+end
+
+function Yi.lang()
+	return Yi._lang
 end
 
 --[==[
@@ -115,7 +112,7 @@ end
 --[==[
 class Observer
 --]==]
-local Observer = Yi.class("Observer")
+local Observer = class("Observer")
 
 function Observer:notifyObserver(...)
 	if self.action and IsFunction(self.action) then
@@ -191,7 +188,7 @@ end
 --[==[
 class Actor
 --]==]
-local Actor = Yi.class("Actor")
+local Actor = class("Actor")
 
 Yi.Actor = Actor
 

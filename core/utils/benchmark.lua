@@ -1,4 +1,4 @@
-Yi = Yi or {}
+local meta = {}
 
 local os = os
 local print = print
@@ -6,7 +6,7 @@ local print = print
 local time_ = 0
 local time_table_ = {}
 
-function Yi.bm_start(name)
+function meta.bm_start(name)
 	if name then
 		time_table_[name] = os.time()
 	else
@@ -14,7 +14,7 @@ function Yi.bm_start(name)
 	end
 end
 
-function Yi.bm_end(name)
+function meta.bm_end(name)
 	local diff_
 	if name then
 		if time_table_[name] then
@@ -30,6 +30,8 @@ function Yi.bm_end(name)
 
 	return diff_
 end
+
+return meta
 
 --[==[
 Usage:

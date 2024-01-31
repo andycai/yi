@@ -3,9 +3,6 @@ local table = table
 
 Yi = Yi or {}
 
-Yi.load('core.utils.var')
-Yi.load('core.utils.i18n')
-
 function Yi.tostring(obj, ...)
 	if type(obj) == "table" then
 		return table.tostring(obj)

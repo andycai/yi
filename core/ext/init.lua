@@ -1,4 +1,4 @@
-Yi.load("core.ext.math")
-Yi.load("core.ext.number")
-Yi.load("core.ext.table")
-Yi.load("core.ext.string")
+require("core.ext.math")
+require("core.ext.number")
+require("core.ext.table")
+require("core.ext.string")

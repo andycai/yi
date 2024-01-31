@@ -1,7 +1,6 @@
 -- Let's us cancel a callback
-Yi = Yi or {}
 
-Yi.callback = function(callback)
+local meta = function(callback)
 	local object = {callback = callback}
 
 	function object.cancel(self)
@@ -21,3 +20,5 @@ Yi.callback = function(callback)
 
 	return object
 end
+
+return meta

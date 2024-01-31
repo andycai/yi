@@ -1,5 +1,5 @@
 -- load data from a .csv file
-Yi = Yi or {}
+local meta = {}
 
 local function loadFile(path)
 	local nums = 0
@@ -30,7 +30,7 @@ local function makeLine(line_text)
 	return nums, values
 end
 
-function Yi.loadcsv(path)
+function meta.loadcsv(path)
 	if path == nil then return nil, nil, nil end
 
 	local data = {}
@@ -47,7 +47,7 @@ function Yi.loadcsv(path)
 	return nums-1, data, labels
 end
 
-function Yi.loadcsvdata(path)
+function meta.loadcsvdata(path)
 	if path == nil then return nil, nil, nil end
 
 	local data = {}
@@ -60,3 +60,5 @@ function Yi.loadcsvdata(path)
 
 	return nums, data
 end
+
+return meta

@@ -12,12 +12,12 @@ LIBPATH = 'libs.'
 local function main()
 	require(COREPATH .. 'yi')
 
-	Yi.load('app.init')
-	Yi:init{
+	local app = require('app.init')
+	Yi.init{
 		log = true,
 		lang = 'zh_cn'
 	}
-	App.run()
+	app.run()
 end
 
 xpcall(main, __G__TRACKBACK__)

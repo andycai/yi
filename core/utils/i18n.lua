@@ -1,5 +1,3 @@
-Yi = Yi or {}
-
 local registry = { }
 local current_namespace
 local fallback_namespace
@@ -51,14 +49,12 @@ local __meta = {
 text:setfallback('zh')
 text:setnamespace('zh')
 
-Yi.__ = setmetatable(text, __meta)
-Yi.text = Yi.__
+setmetatable(text, __meta)
+
+return text
 
 --[==[
 Usage:
-
-local text = Yi.text
--- local text = require "Yi.text"
 
 text:setnamespace("en")
 

@@ -1,9 +1,9 @@
-Load('core.utils.csv')
+local csv = require('core.utils.csv')
 
 local meta = {}
 
 function meta.parseCsv()
-	return Yi.loadcsv("./doc/player.csv")
+	return csv.loadcsv("./doc/player.csv")
 end
 
 function meta:getNick()
