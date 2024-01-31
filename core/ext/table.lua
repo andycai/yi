@@ -1,3 +1,6 @@
+local math = math
+local string = string
+
 function table.clone(t, nometa)
 	local u = {}
 
@@ -239,6 +242,11 @@ function table.checkCopy(key, source, target)
 			target[key] = source[key]
 		end
 	end
+end
+
+function table.pick(tbl)
+	local index = math.random(1, #tbl)
+	return tbl[index]
 end
 
 function table.shuffle(tbl)
