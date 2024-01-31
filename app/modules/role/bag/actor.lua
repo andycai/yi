@@ -10,9 +10,9 @@ function meta:onRegister()
 end
 
 function meta:actionOpenBag(msg)
-	Puts("title: open bag")
-	Puts(msg)
-	Puts(__("role bag initilize %s", "grid 8*8"))
+	Puts("role/bag/actor: title: open bag")
+	Puts("role/bag/actor: " .. msg)
+	Puts("role/bag/actor: " .. __("role bag initilize %s", "grid 8*8"))
 
 	local pane = Go.bag.newWidget('grid')
 	pane:cleanup()

@@ -1,7 +1,7 @@
 local meta = Class("GridPane")
 
 function meta:cleanup()
-	print("clean up bag")
+	print("role/bag/widget/grid: clean up bag")
 end
 
 return meta

@@ -1,6 +1,6 @@
 local meta = Class("RoleActor", Yi.Actor)
 
-local role = Mod("role")
+-- local role = Mod("role")
 
 function meta:listInterests()
 	return {
@@ -20,12 +20,12 @@ function meta:onRegister()
 end
 
 function meta:actionAppStart(actionName, ...)
-	Puts("app start")
-	Puts("action name: " .. actionName)
-	Puts(__("Testing %s", "RoleActor"))
+	Puts("role/actor: app start")
+	Puts("role/actor: action name: " .. actionName)
+	Puts("role/actor: " .. __("Testing %s", "RoleActor"))
 
 	local nums, data, labels = self:service():parseCsv()
-	Puts("csv data:", data)
+	Puts("role/actor: csv data:", data)
 
 	self:model():setNick('babala')
 	self:view():hello()
@@ -39,7 +39,7 @@ function meta:actionAppStart(actionName, ...)
 end
 
 function meta:actionSayHello(...)
-	Puts("role bag info:")
+	Puts("role/actor: role bag info:")
 
 	-- self:request("role.sayHello", {type=1})
 	-- self:response("role.onSayHello", on_say_hello_)

@@ -1,8 +1,10 @@
-local meta = {}
+local meta = Yi.Cell:extend{
+	name = "role"
+}
 
 -- view handler
 function meta.show(param)
-	print("view call me")
+	print("role/handler: view call me")
 end
 
 return meta

@@ -9,9 +9,9 @@ APPPATH = 'app.'
 COREPATH = 'core.'
 LIBPATH = 'libs.'
 
-local function main()
-	require(COREPATH .. 'yi')
+Yi = require(COREPATH .. 'yi')
 
+local function main()
 	local app = require('app.init')
 	Yi.init{
 		log = true,

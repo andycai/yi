@@ -1,11 +1,13 @@
-local meta = {}
+local meta = Yi.Cell:extend{
+	name = "role"
+}
 
 local role = Mod('role')
 
 function meta:hello()
-	print("role pane say hello")
+	print("role/view: role pane say hello")
 
-	role.handler:show()
+	self:handler():show()
 end
 
 return meta
