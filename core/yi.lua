@@ -202,9 +202,9 @@ Actor.static.instance = function()
 	return Actor.instance_
 end
 
-function Actor:initialize(name)
-	assert(not IsEmpty(name), "module name is empty")
-	self._name = name
+function Actor:initialize(moduleName)
+	assert(not IsEmpty(moduleName), "module name is empty")
+	self._name = moduleName
 end
 
 function Actor:listInterests()
@@ -222,6 +222,20 @@ function Actor:addListener(eventName, action)
 	observer_.context = self
 	observer_.action = action
 	Facade:registerObserver(eventName, observer_)
+end
+
+function Actor:model(moduleName)
+	moduleName = moduleName or self._name
+	return Yi.mod(moduleName).model
+end
+
+function Actor:service(moduleName)
+	moduleName = moduleName or self._name
+	return Yi.mod(moduleName).service
+end
+
+function Actor:view()
+	return Yi.mod(self._name).view
 end
 
 function Actor:request(action, param)

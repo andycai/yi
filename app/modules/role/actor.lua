@@ -24,11 +24,11 @@ function meta:actionAppStart(actionName, ...)
 	Puts("action name: " .. actionName)
 	Puts(__("Testing %s", "RoleActor"))
 
-	local nums, data, labels = Go.role.service:parseCsv()
+	local nums, data, labels = self:service():parseCsv()
 	Puts("csv data:", data)
 
-	role.model:setNick('babala')
-	role.view:hello()
+	self:model():setNick('babala')
+	self:view():hello()
 
 	local heroPane = Go.role.newWidget('hero')
 	heroPane:hello()
